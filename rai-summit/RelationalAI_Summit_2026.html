@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RelationalAI @ Snowflake Summit '26 — Start Making Sense</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 28'><g fill='none' stroke='%23E85A3E' stroke-width='3.7' stroke-linejoin='round' stroke-miterlimit='10'><path d='M11.27 2.04 L17.94 8.72 L24.61 2.04'/><path d='M24.61 26.04 L17.94 19.38 L11.27 26.04'/><path d='M8.55 7.37 L1.87 14.05 L8.55 20.71'/><path d='M27.32 20.71 L33.99 14.05 L27.35 7.40'/></g></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* warm dark palette, lifted from the Start Making Sense tee */
+    --bg: #0E0D0B;
+    --bg-2: #14130F;
+    --surface: #1B1A16;
+    --surface-2: #24221D;
+    --border: #2F2C26;
+    --border-strong: #3E3A32;
+    --ink: #F4EFE6;
+    --ink-dim: #B8B0A2;
+    --ink-faint: #7A7367;
+    --rai-orange: #E85A3E;
+    --rai-orange-glow: #FF7A56;
+    --rai-orange-soft: rgba(232, 90, 62, 0.14);
+    --rai-orange-line: rgba(232, 90, 62, 0.4);
+    --snowflake-blue: #29B5E8;
+    /* priority colors — warm tee palette */
+    --p0-keynote: #29B5E8;
+    --p0-prospect: #E85A3E;
+    --p1-partner: #E89B3E;
+    --p1-core: #A8C268;
+    --p1-strategic: #C089D3;
+    --p2: #8A8377;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(232,90,62,0.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 0%, rgba(41,181,232,0.05), transparent 60%),
+      var(--bg);
+    min-height: 100vh;
+  }
+  .display { font-family: "Space Grotesk", "Inter", sans-serif; letter-spacing: -0.02em; }
+
+  /* ---------- Header ---------- */
+  header {
+    padding: 28px 40px 36px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .rai-logo {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+  }
+  .rai-lockup {
+    height: 26px;
+    width: auto;
+    display: block;
+  }
+  .rai-lockup .mark { stroke: var(--rai-orange); }
+  .rai-lockup .word { fill: var(--ink); }
+  .rai-mark-only {
+    height: 22px;
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .rai-mark-only path { stroke: var(--rai-orange); }
+  .brand-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-strong);
+  }
+  .brand-context {
+    color: var(--ink-faint);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--rai-orange-line);
+    background: var(--rai-orange-soft);
+    color: var(--rai-orange-glow);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 16px;
+  }
+  .hero-eyebrow .pulse {
+    width: 6px; height: 6px;
+    background: var(--rai-orange);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(232,90,62,0.6);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(232,90,62,0.6); }
+    70%  { box-shadow: 0 0 0 10px rgba(232,90,62,0); }
+    100% { box-shadow: 0 0 0 0 rgba(232,90,62,0); }
+  }
+  h1.hero {
+    font-family: "Space Grotesk", "Inter", sans-serif;
+    font-size: clamp(38px, 6vw, 72px);
+    line-height: 1.0;
+    letter-spacing: -0.035em;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  h1.hero .orange { color: var(--rai-orange); }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--ink-dim);
+    max-width: 680px;
+    line-height: 1.55;
+  }
+  .hero-byrne {
+    font-style: italic;
+    color: var(--ink-faint);
+    font-size: 13px;
+    margin-top: 12px;
+    border-left: 2px solid var(--rai-orange);
+    padding-left: 12px;
+    max-width: 600px;
+  }
+  .stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(.2,.7,.3,1);
+    text-align: left;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  .stat:hover {
+    background: var(--surface-2);
+    border-color: var(--rai-orange-line);
+    transform: translateY(-2px);
+  }
+  .stat.active {
+    background: var(--rai-orange-soft);
+    border-color: var(--rai-orange);
+  }
+  .stat-num {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  .stat-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .stat-arrow {
+    margin-left: 4px;
+    color: var(--ink-faint);
+    font-size: 13px;
+    transition: transform 0.15s, color 0.15s;
+  }
+  .stat:hover .stat-arrow { color: var(--rai-orange); transform: translateX(2px); }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    background: rgba(20, 19, 15, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  .tab {
+    padding: 18px 22px;
+    color: var(--ink-dim);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--rai-orange);
+  }
+  .tab-count {
+    padding: 2px 8px;
+    background: var(--surface-2);
+    border-radius: 999px;
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+  .tab.active .tab-count {
+    background: var(--rai-orange-soft);
+    color: var(--rai-orange-glow);
+  }
+
+  /* ---------- Layout ---------- */
+  main { padding: 28px 40px 80px; max-width: 1600px; margin: 0 auto; }
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .session-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+  }
+
+  /* ---------- Filters ---------- */
+  .filters {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    position: sticky;
+    top: 68px;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+  }
+  .filters::-webkit-scrollbar { width: 6px; }
+  .filters::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .filter-group { margin-bottom: 22px; }
+  .filter-group:last-child { margin-bottom: 0; }
+  .filter-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .search-box {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--ink);
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .search-box:focus {
+    outline: none;
+    border-color: var(--rai-orange);
+  }
+  .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    padding: 6px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--ink-dim);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .chip:hover {
+    background: var(--border);
+    color: var(--ink);
+  }
+  .chip.active {
+    background: var(--rai-orange);
+    border-color: var(--rai-orange);
+    color: #fff;
+  }
+  .chip-count {
+    opacity: 0.7;
+    font-size: 10px;
+  }
+  .chip.active .chip-count { color: rgba(255,255,255,0.85); opacity: 1; }
+  .reset-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .reset-btn:hover { color: var(--rai-orange); border-color: var(--rai-orange-line); background: var(--rai-orange-soft); }
+
+  /* ---------- Session Cards ---------- */
+  .results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    color: var(--ink-dim);
+    font-size: 14px;
+  }
+  .results-bar strong { color: var(--ink); font-weight: 600; }
+  .results-bar .lyric {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 12px;
+  }
+  .cards { display: flex; flex-direction: column; gap: 14px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px 18px;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    border-color: var(--rai-orange-line);
+    background: var(--surface-2);
+  }
+  .card-priority {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .card-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: var(--ink-dim);
+  }
+  .meta-item { display: flex; align-items: center; gap: 6px; }
+  .meta-icon { color: var(--ink-faint); font-size: 13px; }
+  .why {
+    background: var(--rai-orange-soft);
+    border-left: 2px solid var(--rai-orange);
+    padding: 10px 14px;
+    margin: 12px 0;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .why::before {
+    content: "Why ";
+    color: var(--rai-orange);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+  .card-companies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0;
+  }
+  .company-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 12px 4px 4px;
+    background: var(--bg-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .company-logo {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    object-fit: contain;
+    padding: 2px;
+  }
+  .topic-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+  }
+  .topic-tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    background: var(--surface-2);
+    border-radius: 4px;
+    color: var(--ink-dim);
+  }
+  .topic-tag.core {
+    background: rgba(168,194,104,0.12);
+    color: #C8DC8C;
+  }
+  .speakers {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .speakers-label {
+    font-size: 10px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .avatar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px 3px 3px;
+    background: var(--bg-2);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink-dim);
+  }
+  .avatar-circle {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  /* ---------- Account Coverage ---------- */
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .acct-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .acct-card:hover {
+    border-color: var(--rai-orange-line);
+    transform: translateY(-2px);
+  }
+  .acct-card.on-stage { border-left: 3px solid var(--p1-core); }
+  .acct-card.plan { border-left: 3px solid var(--p1-partner); opacity: 0.85; }
+  .acct-card.plan:hover { opacity: 1; }
+  .acct-logo {
+    width: 44px; height: 44px;
+    background: var(--bg-2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .acct-info { flex: 1; min-width: 0; }
+  .acct-name {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 14px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: "Space Grotesk", sans-serif;
+    letter-spacing: -0.01em;
+  }
+  .acct-status {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    font-weight: 600;
+  }
+  .acct-status.on-stage-text { color: #C8DC8C; }
+  .acct-status.plan-text { color: #F0B675; }
+  .acct-count {
+    background: rgba(168,194,104,0.15);
+    color: #C8DC8C;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 16px;
+    margin-top: 8px;
+  }
+  .section-head h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .section-head .meta {
+    font-size: 13px;
+    color: var(--ink-dim);
+  }
+  .section-head .lyric {
+    font-size: 12px;
+    color: var(--rai-orange);
+    font-style: italic;
+    margin-left: auto;
+  }
+
+  /* ---------- About ---------- */
+  .about {
+    max-width: 760px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+  }
+  .about h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 26px;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .about h3 {
+    font-size: 14px;
+    margin: 24px 0 10px;
+    color: var(--rai-orange);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+  .about p { color: var(--ink-dim); margin-bottom: 12px; line-height: 1.65; }
+  .about ul { color: var(--ink-dim); margin-left: 20px; margin-bottom: 12px; }
+  .about li { margin-bottom: 8px; line-height: 1.6; }
+  .about a { color: var(--rai-orange); text-decoration: none; }
+  .about a:hover { text-decoration: underline; }
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    color: var(--ink-dim);
+    font-size: 14px;
+  }
+  .legend-pill {
+    display: inline-block;
+    width: 92px;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    letter-spacing: 0.06em;
+  }
+  .lyric-quote {
+    font-style: italic;
+    color: var(--ink-faint);
+    font-size: 14px;
+    padding: 16px 20px;
+    border-left: 2px solid var(--rai-orange);
+    background: var(--bg-2);
+    border-radius: 4px;
+    margin: 20px 0;
+  }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 60px 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-width: 760px;
+    width: 100%;
+    padding: 28px;
+  }
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-head h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+  .modal-close {
+    background: transparent;
+    border: none;
+    color: var(--ink-dim);
+    cursor: pointer;
+    font-size: 24px;
+    width: 34px; height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  .modal-close:hover { background: var(--surface-2); color: var(--rai-orange); }
+  .empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--ink-faint);
+  }
+  .empty-headline {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 22px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 30px 40px;
+    border-top: 1px solid var(--border);
+    color: var(--ink-faint);
+    font-size: 13px;
+    font-style: italic;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .session-layout { grid-template-columns: 1fr; }
+    .filters { position: static; max-height: none; }
+    header { padding: 24px 20px; }
+    main { padding: 20px; }
+    .tabs { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-row">
+    <div class="rai-logo">
+      <svg class="rai-lockup" viewBox="0 0 187 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="RelationalAI">
+        <g class="mark" fill="none" stroke-width="3.68853" stroke-miterlimit="10" stroke-linejoin="round">
+          <path d="M11.2664 2.04492L17.9361 8.71829L24.6094 2.04492"/>
+          <path d="M24.6094 26.0447L17.9361 19.375L11.2664 26.0447"/>
+          <path d="M8.54745 7.36621L1.87408 14.0505L8.54745 20.7093"/>
+          <path d="M27.3214 20.7086L33.9947 14.0499L27.3542 7.39844"/>
+        </g>
+        <g class="word">
+          <path d="M51.34 6.62793C53.0294 6.628 54.3184 7.01433 55.2092 7.78516C56.0999 8.55591 56.544 9.60322 56.5441 10.9287C56.5441 12.0031 56.2378 12.9022 55.6232 13.6367C55.0083 14.3679 54.2189 14.8375 53.258 15.0449V15.0801C54.1728 15.3024 54.8784 15.6702 55.3723 16.1895C55.8648 16.7074 56.1164 17.4955 56.1164 18.5527V19.6162C56.1164 20.2011 56.1381 20.6952 56.1857 21.0908C56.2326 21.48 56.3121 21.9083 56.4191 22.375H52.8478C52.6469 21.7605 52.5461 20.8573 52.5461 19.6641V18.834C52.5461 17.9757 52.3109 17.334 51.8381 16.9092C51.3661 16.4851 50.7179 16.2764 49.8928 16.2764H46.6213V22.3789H43.0256V6.62793H51.34ZM46.6213 13.7217H50.5314C51.3268 13.7217 51.9073 13.5342 52.2668 13.1562C52.6256 12.7788 52.8049 12.2071 52.8049 11.4482C52.8049 10.7652 52.6155 10.2486 52.2346 9.90332C51.8539 9.55841 51.2848 9.38672 50.5314 9.38672H46.6213V13.7217Z"/>
+          <path d="M64.5844 10.1655C66.6858 10.1656 68.229 10.7491 69.222 11.9165C70.2164 13.0857 70.7132 14.5834 70.7133 16.4146C70.7133 16.8621 70.698 17.1699 70.6674 17.3462H61.6185L61.6205 17.3667C61.7157 18.4466 62.0192 19.2199 62.5394 19.6812C63.059 20.1454 63.7625 20.3726 64.6537 20.3726C65.3863 20.3689 65.9746 20.2335 66.4242 19.9536C66.8659 19.6762 67.1778 19.3001 67.3519 18.8267H70.6869C70.494 19.9379 69.9171 20.8659 68.9545 21.6187C67.987 22.3752 66.5302 22.7553 64.5844 22.7554C62.4206 22.7554 60.8183 22.1607 59.7777 20.9712C58.7359 19.7801 58.2143 18.2678 58.2142 16.437C58.2142 15.2518 58.4471 14.1871 58.9135 13.2397C59.3795 12.293 60.0899 11.5428 61.0443 10.9927C61.9984 10.4392 63.1796 10.1655 64.5844 10.1655ZM64.6351 12.5044C63.759 12.5007 63.078 12.7058 62.5912 13.1226C62.104 13.5396 61.7887 14.2391 61.6459 15.2241L61.6429 15.2456H67.4066L67.4056 15.2261C67.3433 14.321 67.0827 13.6397 66.6293 13.186C66.1752 12.732 65.508 12.5044 64.6351 12.5044Z"/>
+          <path d="M76.1768 5.79443V22.3755H72.7012V5.79443H76.1768Z"/>
+          <path d="M83.7923 10.1621C85.7351 10.1621 87.1135 10.8725 87.9319 12.291L87.9661 12.3496V10.542H91.4417V22.376H87.9661V20.5469L87.9319 20.6045C87.0952 22.0378 85.7166 22.7559 83.7923 22.7559C81.9619 22.7558 80.6162 22.1686 79.7581 20.9941C78.8985 19.8176 78.4681 18.3089 78.468 16.459C78.468 14.5796 78.8985 13.0593 79.7581 11.8975C80.6162 10.7414 81.9583 10.1622 83.7923 10.1621ZM84.885 12.8809C83.8228 12.8809 83.0602 13.1558 82.6057 13.7061C82.1521 14.2556 81.9251 15.1787 81.9251 16.459C81.9251 17.7281 82.1514 18.6434 82.6048 19.2002C83.0592 19.7617 83.8226 20.0371 84.885 20.0371C85.9332 20.0408 86.7105 19.7618 87.2122 19.2012C87.7137 18.6407 87.9661 17.725 87.9661 16.459C87.9661 15.1929 87.721 14.2773 87.2268 13.7168C86.7323 13.1559 85.9477 12.8809 84.885 12.8809Z"/>
+          <path d="M98.78 7.71729V10.5425H102.198V13.1665H98.78V19.6128H101.869V22.3794H99.6725V22.3755H99.654C98.0256 22.3755 96.8957 22.0321 96.2614 21.3472C95.6264 20.6649 95.3044 19.5884 95.3044 18.1177V13.1665H93.1452V11.5112L95.5788 10.519L95.5807 10.5239L95.5876 10.5103L97.03 7.71729H98.78Z"/>
+          <path d="M107.826 10.5425V22.3755H104.35V10.5425H107.826ZM107.968 6.62451V8.93799H104.182V6.62451H107.968Z"/>
+          <path d="M116.483 10.1587C117.983 10.1587 119.226 10.4468 120.212 11.022C121.2 11.5977 121.918 12.3587 122.366 13.3052C122.814 14.2527 123.04 15.2955 123.04 16.4331C123.04 17.5855 122.814 18.6394 122.366 19.5942C121.918 20.5481 121.196 21.3124 120.212 21.8882C119.226 22.4635 117.983 22.7524 116.483 22.7524C114.983 22.756 113.745 22.4673 112.765 21.8921C111.785 21.3163 111.067 20.5556 110.612 19.6089C110.153 18.6615 109.927 17.6038 109.927 16.4331C109.927 15.2809 110.156 14.2311 110.612 13.2837C111.071 12.337 111.789 11.5797 112.765 11.0112C113.741 10.4433 114.98 10.1588 116.483 10.1587ZM116.487 12.8774C115.406 12.8775 114.625 13.1482 114.145 13.6909C113.665 14.2333 113.428 15.1609 113.428 16.4595C113.428 17.7579 113.666 18.6811 114.145 19.2271C114.625 19.7697 115.406 20.0405 116.487 20.0405C117.582 20.0405 118.371 19.7699 118.851 19.2271C119.331 18.6847 119.568 17.7615 119.568 16.4595C119.568 15.2422 119.359 14.3544 118.938 13.7983L118.851 13.6909L118.757 13.5923C118.271 13.1153 117.514 12.8774 116.487 12.8774Z"/>
+          <path d="M132.893 10.1621C134.36 10.1621 135.458 10.5745 136.19 11.3965C136.921 12.2191 137.289 13.4551 137.289 15.1064V22.376H133.814V15.6514C133.814 14.7178 133.624 14.032 133.239 13.6104C132.855 13.1852 132.286 12.9757 131.541 12.9756C130.632 12.9756 129.931 13.2635 129.437 13.8369L129.341 13.9551C128.848 14.6103 128.603 15.6276 128.603 17.0068V22.3789H125.127V10.542H128.603V12.8516L128.637 12.8594C129.063 11.9593 129.631 11.2851 130.34 10.8359C131.049 10.3868 131.9 10.1621 132.893 10.1621Z"/>
+          <path d="M144.642 10.1621C146.585 10.1621 147.963 10.8725 148.782 12.291L148.816 12.3496V10.542H152.292V22.376H148.816V20.5469L148.782 20.6045C147.945 22.0378 146.567 22.7559 144.642 22.7559C142.812 22.7558 141.466 22.1686 140.608 20.9941C139.748 19.8176 139.318 18.3089 139.318 16.459C139.318 14.5796 139.748 13.0593 140.608 11.8975C141.466 10.7414 142.808 10.1622 144.642 10.1621ZM145.735 12.8809C144.673 12.8809 143.91 13.1558 143.456 13.7061C143.002 14.2556 142.775 15.1787 142.775 16.459C142.775 17.7281 143.001 18.6434 143.455 19.2002C143.909 19.7617 144.673 20.0371 145.735 20.0371C146.783 20.0408 147.56 19.7618 148.062 19.2012C148.564 18.6407 148.816 17.725 148.816 16.459C148.816 15.1929 148.571 14.2773 148.077 13.7168C147.582 13.1559 146.798 12.8809 145.735 12.8809Z"/>
+          <path d="M158.585 5.79443V22.3755H155.11V5.79443H158.585Z"/>
+          <path d="M169.774 6.62451L175.742 22.3755H173.786L172.248 18.353L172.244 18.3413H164.384L164.379 18.353L162.842 22.3755H160.91L166.879 6.62451H169.774ZM168.297 8.0249L164.97 16.7632L164.962 16.7876H171.662L171.652 16.7632L168.331 8.0249L168.313 7.97998L168.297 8.0249Z"/>
+          <path d="M186.243 6.62451V8.17725H182.895V20.8228H186.243V22.3755H177.636V20.8228H180.984V8.17725H177.636V6.62451H186.243Z"/>
+        </g>
+      </svg>
+    </div>
+    <div class="brand-divider"></div>
+    <span class="brand-context">Snowflake Summit '26 · Internal team guide</span>
+  </div>
+
+  <div class="hero-eyebrow"><span class="pulse"></span>Same as it ever was — only the catalog got bigger</div>
+
+  <h1 class="hero" class="display">Start Making <span class="orange">Sense.</span></h1>
+  <p class="hero-sub">535 sessions, narrowed down to the rooms where RelationalAI actually needs to be. Customer/prospect stages, ontology + KG + decision intelligence content, partner moments, and the strategic narratives shaping the category.</p>
+  <p class="hero-byrne">"And you may ask yourself: well, how did I get to this many sessions?" — Curated so you don't have to read every abstract on the catalog page.</p>
+
+  <div class="stats" id="hero-stats"></div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-tab="sessions">Sessions <span class="tab-count" id="count-sessions"></span></div>
+  <div class="tab" data-tab="coverage">Account Coverage <span class="tab-count" id="count-coverage"></span></div>
+  <div class="tab" data-tab="about">How to Use</div>
+</div>
+
+<main>
+  <section class="view active" id="view-sessions">
+    <div class="session-layout">
+      <aside class="filters">
+        <div class="filter-group">
+          <div class="filter-label">Search</div>
+          <input type="text" class="search-box" id="search" placeholder="Title, speaker, company...">
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Priority</div>
+          <div class="chip-group" id="filter-priority"></div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Day</div>
+          <div class="chip-group" id="filter-day"></div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Account / Prospect</div>
+          <div class="chip-group" id="filter-account"></div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Topic</div>
+          <div class="chip-group" id="filter-topic"></div>
+        </div>
+        <button class="reset-btn" onclick="resetFilters()">Stop Making Sense — reset filters</button>
+      </aside>
+      <div>
+        <div class="results-bar">
+          <div><strong id="result-count">0</strong> sessions matching</div>
+          <div class="lyric" id="results-lyric"></div>
+        </div>
+        <div class="cards" id="cards"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-coverage">
+    <div class="section-head">
+      <h2>This Must Be the Place</h2>
+      <span class="meta">RAI accounts on stage — show up, take notes, follow up</span>
+    </div>
+    <div class="coverage-grid" id="coverage-on-stage"></div>
+
+    <div class="section-head">
+      <h2>Road to Nowhere</h2>
+      <span class="meta">No public session — book a 1:1, work the booth, or catch them at an evening event</span>
+    </div>
+    <div class="coverage-grid" id="coverage-plan"></div>
+  </section>
+
+  <section class="view" id="view-about">
+    <div class="about">
+      <h2>How this list was built</h2>
+      <p>Starting from the full 535-session Snowflake Summit '26 catalog, every session was scored against four signals. A session was kept if any of these matched, and prioritized based on which:</p>
+      <ul>
+        <li><strong>RAI account on the schedule</strong> — from the prospect, customer, and partner list shared in the May 22 prep call.</li>
+        <li><strong>Direct topic overlap with RAI positioning</strong> — ontology, semantic layer/views, knowledge graph, decision intelligence, reasoning, eval, super-alignment, Open Semantic Interchange.</li>
+        <li><strong>Strategic narratives</strong> — Context Layer, Agentic Enterprise, "Future of [Industry]" panels, founders/VCs sessions — the rooms where the category story is being written.</li>
+        <li><strong>Adjacent agentic/GenAI</strong> — only included when intersected with a vertical RAI plays in (Telco, FinServ, Manufacturing, HCLS, Retail) or a vendor we want to watch (Atlan, Workday, Hex, ThoughtSpot, etc.). Generic agent sessions were filtered out as noise.</li>
+      </ul>
+
+      <div class="lyric-quote">"You may find yourself in a beautiful keynote. You may find yourself in a session with our largest customer. And you may ask yourself: am I in the right room?" — That's what this site is for.</div>
+
+      <h3>Priority legend</h3>
+      <div class="legend-row"><span class="legend-pill" style="background:#29B5E8">P0</span> Keynote — mandatory situational awareness</div>
+      <div class="legend-row"><span class="legend-pill" style="background:#E85A3E">P0</span> Customer/Prospect on stage — high-leverage rooms</div>
+      <div class="legend-row"><span class="legend-pill" style="background:#E89B3E">P1</span> Partner session — phData, EY, Deloitte, Tredence, LTI Mindtree</div>
+      <div class="legend-row"><span class="legend-pill" style="background:#A8C268">P1</span> Core RAI topic — ontology, semantic, KG, DI, reasoning, eval</div>
+      <div class="legend-row"><span class="legend-pill" style="background:#C089D3">P1</span> Strategic narrative — context layer, agentic enterprise, founders/VCs</div>
+      <div class="legend-row"><span class="legend-pill" style="background:#8A8377">P2</span> Adjacent — good background, optional</div>
+
+      <h3>Source</h3>
+      <p>Snowflake Summit '26 session catalog · <a href="https://reg.snowflake.com/flow/snowflake/summit26/sessions/page/catalog" target="_blank">reg.snowflake.com/summit26</a></p>
+
+      <h3>Coverage gaps</h3>
+      <p>34 of 44 priority accounts have no public Summit session — most of the MENA list (Abu Dhabi Ports, Mubadala, Dubai Airports, QRDI, PIF, QIA), plus BMW, Novartis, Pfizer, Biogen, Vanguard, Grainger, KDDI, and others. The Account Coverage tab flags these — plan booth time, 1:1s, or evening events to cover them.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <svg class="rai-mark-only" viewBox="0 0 36 28" fill="none" aria-hidden="true">
+    <g fill="none" stroke-width="3.68853" stroke-miterlimit="10" stroke-linejoin="round">
+      <path d="M11.2664 2.04492L17.9361 8.71829L24.6094 2.04492"/>
+      <path d="M24.6094 26.0447L17.9361 19.375L11.2664 26.0447"/>
+      <path d="M8.54745 7.36621L1.87408 14.0505L8.54745 20.7093"/>
+      <path d="M27.3214 20.7086L33.9947 14.0499L27.3542 7.39844"/>
+    </g>
+  </svg>
+  <div style="margin-top:10px;">And you may ask yourself, well… same as it ever was.</div>
+</footer>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modal-title"></h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const DATA = {"sessions": [{"Priority": "P0 \u2014 Keynote", "Session Title": "Opening Keynote", "Date & Time": "Monday, June 01 | 05:00 PM - 06:15 PM PDT", "Track": "Keynote", "Speakers": "Sridhar Ramaswamy; Julie Sweet; Manish Sharma; Daniela Amodei; Emmanuel Frenehard", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Mandatory keynote \u2014 read the room on Snowflake's strategic narrative", "Day": "Monday"}, {"Priority": "P0 \u2014 Keynote", "Session Title": "Platform Keynote", "Date & Time": "Tuesday, June 02 | 09:00 AM - 11:00 AM PDT", "Track": "Keynote", "Speakers": "Christian Kleinerman; Caitlin Halferty; Patrick Duroseau; Jung Suh; Benoit Dageville; Dash Desai", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Mandatory keynote \u2014 read the room on Snowflake's strategic narrative", "Day": "Tuesday"}, {"Priority": "P0 \u2014 Keynote", "Session Title": "Builders Keynote", "Date & Time": "Wednesday, June 03 | 09:00 AM - 10:30 AM PDT", "Track": "Keynote", "Speakers": "Carl Perry; Guillermo Rauch; Durgesh Das; Anastasiia Stefanska; Ravi Achukola; James Cha-Earley", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Mandatory keynote \u2014 read the room on Snowflake's strategic narrative", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Accelerating AI Readiness: Data to Real-Time Answers with Snowflake Intelligence", "Date & Time": "Monday, June 01 | 01:00 PM - 01:45 PM PDT", "Track": "Data Engineering & Pipelines", "Speakers": "Venu Mashetty; Rangi Devanathan", "Affiliated Companies": "DAIMLER TRUCK NORTH AMERICA; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Cortex AI Functions: Unstructured Data in Manufacturing and Customer Analytics", "Date & Time": "Monday, June 01 | 01:00 PM - 01:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Yuta Watanabe; Kotone Yoshioka", "Affiliated Companies": "Panasonic Connect", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence, Supply Chain / Manufacturing", "Why Attend": "Agentic/GenAI intersected with vertical: Supply Chain / Manufacturing; Snowflake-native AI", "Day": "Monday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "Future-Ready by Design: Boston Scientific\u2019s Self-Service D&A Op Model", "Date & Time": "Monday, June 01 | 01:00 PM - 01:20 PM PDT", "Track": "BI & Analytics", "Speakers": "Julianna Bond; Jon Sandquist", "Affiliated Companies": "phData; Boston Scientific", "Customer/Prospect Tags": "phData (Partner)", "Topic Tags": "", "Why Attend": "RAI partner speaking: phData (Partner)", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "How Siemens SI and Accenture Enabled the Power of Conversational BI with Cortex", "Date & Time": "Monday, June 01 | 01:00 PM - 01:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Timo H\u00fcftle; Marcel Schwarze", "Affiliated Companies": "Siemens Schweiz AG; Accenture", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "How to Evaluate Snowflake Gen2 Safely in Production and the Outcomes at Scale", "Date & Time": "Monday, June 01 | 01:00 PM - 01:20 PM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Muthupalaniappan Ramanathan", "Affiliated Companies": "Doordash", "Customer/Prospect Tags": "", "Topic Tags": "LLM Specialization / Eval", "Why Attend": "Direct overlap with RAI positioning: LLM Specialization / Eval", "Day": "Monday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "Preventing the Snowball Effect: Morgan Stanley\u2019s 10 Principles for Scale FinOps", "Date & Time": "Monday, June 01 | 01:00 PM - 01:45 PM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Manessh Chhabra; Howard Goldberg", "Affiliated Companies": "Snowflake; Morgan Stanley", "Customer/Prospect Tags": "Morgan Stanley", "Topic Tags": "", "Why Attend": "RAI account on stage: Morgan Stanley", "Day": "Monday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "The CEO's Case for Snowflake-Native AI Apps", "Date & Time": "Monday, June 01 | 01:00 PM - 01:30 PM PDT", "Track": "Executive Content", "Speakers": "Mike Palmer", "Affiliated Companies": "Sigma", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Zero to Agentic Analytics: Activate Snowflake Data with ThoughtSpot Agents", "Date & Time": "Monday, June 01 | 01:00 PM - 02:30 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Bill Back; Ali Alladin", "Affiliated Companies": "ThoughtSpot", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Thoughtspot", "Why Attend": "Agentic/GenAI intersected with vendor watch: Thoughtspot", "Day": "Monday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Industry Summit Tour \u2014 Marketing", "Date & Time": "Monday, June 01 | 01:30 PM - 03:00 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "How Fanatics Manages dbt Metrics with Cortex Code for Natural Language Analytics", "Date & Time": "Monday, June 01 | 01:30 PM - 02:15 PM PDT", "Track": "BI & Analytics", "Speakers": "Christine Kwon; Brett Pendleton", "Affiliated Companies": "Fanatics", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "Meet a Data Superhero: AI in Production \u2014 What's Actually Working", "Date & Time": "Monday, June 01 | 01:30 PM - 02:30 PM PDT", "Track": "AI Pop Up", "Speakers": "Vivek Pant; Pooja Sahu; St\u00e9phane Burwash; Alexander Murugesan; Andy Quirin; Mandeep Singh; Ruchi Soni", "Affiliated Companies": "The Hartford; Schroders; Infostrux; EY Newzealand; Alchemy Tech Group; Texas capital; Accenture", "Customer/Prospect Tags": "EY (Partner)", "Topic Tags": "", "Why Attend": "RAI partner speaking: EY (Partner)", "Day": "Monday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Self-Healing Semantic Layers with Snowflake Cortex AI: How Sigma Built J.A.K.E.", "Date & Time": "Monday, June 01 | 01:30 PM - 02:15 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Matt Senick; Tejas Patel", "Affiliated Companies": "Sigma Computing", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, Cortex / Snowflake Intelligence, Vendor watch: Sigma Computing", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Monday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "The Art of Data Relationship Chemistry for Global Financial Services", "Date & Time": "Monday, June 01 | 01:30 PM - 01:50 PM PDT", "Track": "BI & Analytics", "Speakers": "Michael Tran; Claire Callahan", "Affiliated Companies": "EY; Ernst & Young", "Customer/Prospect Tags": "EY (Partner)", "Topic Tags": "Financial Services", "Why Attend": "RAI partner speaking: EY (Partner)", "Day": "Monday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Sovereign AI: Building Resilient Data Foundations in EMEA", "Date & Time": "Monday, June 01 | 01:45 PM - 02:15 PM PDT", "Track": "Executive Content", "Speakers": "Dr. Pierre Alexandre Fischer; Pollyanna Jones; Joe Zhang; Dayne Turbitt", "Affiliated Companies": "Roche; Snowflake; NHS (OneLondon)", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Deploying Geospatial Solutions via Natural Language with Cortex Code", "Date & Time": "Monday, June 01 | 02:00 PM - 02:20 PM PDT", "Track": "BI & Analytics", "Speakers": "Rebecca O'Connor; Piotr Paczewski", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "ExxonMobil's Enterprise Data Transformation with Marketplace Capacity Drawdown", "Date & Time": "Monday, June 01 | 02:00 PM - 02:45 PM PDT", "Track": "Data Sharing & Marketplace", "Speakers": "Dylan Hines; Wayne Frawner", "Affiliated Companies": "ExxonMobil; ExxonMobil Global Services Company", "Customer/Prospect Tags": "Exxon Mobil", "Topic Tags": "", "Why Attend": "RAI account on stage: Exxon Mobil", "Day": "Monday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "Regional Data Moves at Scale: Solving Data Locality Without Breaking Analytics", "Date & Time": "Monday, June 01 | 02:00 PM - 02:45 PM PDT", "Track": "Governance & Security", "Speakers": "Shahid Faiz; Vishnupriya Varadarajan", "Affiliated Companies": "Zendesk", "Customer/Prospect Tags": "Zendesk", "Topic Tags": "", "Why Attend": "RAI account on stage: Zendesk", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Agentic ML in Action: Train, Deploy and Monitor Models with Cortex Code", "Date & Time": "Monday, June 01 | 02:30 PM - 03:15 PM PDT", "Track": "Machine Learning", "Speakers": "Doris Lee", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Future-Proofing the American Workforce: A Fireside Chat with Taylor Stockton", "Date & Time": "Monday, June 01 | 02:30 PM - 03:00 PM PDT", "Track": "Executive Content", "Speakers": "Taylor Stockton; Matthew Rose", "Affiliated Companies": "U.S. Department of Labor; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Snowflake Intelligence for Trading and Risk Management", "Date & Time": "Monday, June 01 | 02:30 PM - 02:50 PM PDT", "Track": "Governance & Security", "Speakers": "Sreenivasu Bollina", "Affiliated Companies": "ofi", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Industry Summit Tour \u2014 Media", "Date & Time": "Monday, June 01 | 03:00 PM - 04:30 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Getting Your Data Cortex AI-Ready with Fivetran, Snowflake and dbt", "Date & Time": "Monday, June 01 | 03:00 PM - 04:30 PM PDT", "Track": "Data Engineering & Pipelines", "Speakers": "Luis Leon; Kelly Kohlleffel", "Affiliated Companies": "dbt Labs; Fivetran", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence, Vendor watch: Fivetran, Dbt Labs", "Why Attend": "Agentic/GenAI intersected with vendor watch: Fivetran, Dbt Labs; Snowflake-native AI", "Day": "Monday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "How Canva Built a Petabyte-Scale Optimization Ecosystem", "Date & Time": "Monday, June 01 | 03:00 PM - 03:45 PM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Haoyang Cui; Anna Bisset", "Affiliated Companies": "Canva", "Customer/Prospect Tags": "", "Topic Tags": "Reasoning / Optimization", "Why Attend": "Direct overlap with RAI positioning: Reasoning / Optimization", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Identifying Chronic Conditions Using Snowflake Cortex AI", "Date & Time": "Monday, June 01 | 03:00 PM - 03:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Moiz Ahmed; Alex Trahey", "Affiliated Companies": "Snowflake; Agilon Health", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Powering Agentic Enterprise with AI-Ready Data from Informatica and Snowflake", "Date & Time": "Monday, June 01 | 03:00 PM - 03:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Rik Tamm-Daniels", "Affiliated Companies": "Informatica from Salesforce", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Informatica", "Why Attend": "Agentic/GenAI intersected with vendor watch: Informatica", "Day": "Monday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Trusted by Design: Scaling Enterprise AI Without Scaling Your Risk", "Date & Time": "Monday, June 01 | 03:15 PM - 03:45 PM PDT", "Track": "Executive Content", "Speakers": "Ryan Segar", "Affiliated Companies": "dbt Labs", "Customer/Prospect Tags": "", "Topic Tags": "Vendor watch: Dbt Labs", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Monday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "Banking on Uptime: Morgan Stanley Achieves Resilience at Scale with Snowflake", "Date & Time": "Monday, June 01 | 03:30 PM - 04:15 PM PDT", "Track": "Governance & Security", "Speakers": "Boris Serebrinskiy; Sid Ramadoss", "Affiliated Companies": "Morgan Stanley; Snowflake", "Customer/Prospect Tags": "Morgan Stanley", "Topic Tags": "Financial Services", "Why Attend": "RAI account on stage: Morgan Stanley", "Day": "Monday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Build Better Semantic Views Using Cortex Code and Glean", "Date & Time": "Monday, June 01 | 03:30 PM - 03:50 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Jess Eurich; Randy Pettus", "Affiliated Companies": "Glean; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, Cortex / Snowflake Intelligence", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Context Is the New Code: AI Engineering with Snowflake Cortex AI", "Date & Time": "Monday, June 01 | 03:30 PM - 03:50 PM PDT", "Track": "Data Engineering & Pipelines", "Speakers": "Karthik Raman; Pallavi Sharma", "Affiliated Companies": "LTM; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Data Governance to AI Innovation: Camden Bank ROI with Qlik and Cortex in FS AI", "Date & Time": "Monday, June 01 | 03:30 PM - 03:50 PM PDT", "Track": "BI & Analytics", "Speakers": "Josh Nash", "Affiliated Companies": "Camden National Bank", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "From Chaos to Consistency: Using Snowflake Cortex to Standardize Fraud Labels", "Date & Time": "Monday, June 01 | 04:00 PM - 04:20 PM PDT", "Track": "Application Development", "Speakers": "Gareth Campbell", "Affiliated Companies": "BioCatch", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "How Customers Are Running an Efficient Snowflake Environment", "Date & Time": "Monday, June 01 | 04:00 PM - 04:45 PM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Mark Howerton; Adi Glasman; Arjun Puri; Douglas Gallagher", "Affiliated Companies": "CrowdStrike; Zendesk; Depository Trust & Clearing Corporation; Snowflake", "Customer/Prospect Tags": "Zendesk", "Topic Tags": "", "Why Attend": "RAI account on stage: Zendesk", "Day": "Monday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "WTF Is the Enterprise Context Layer? Demystified and Demoed", "Date & Time": "Monday, June 01 | 04:00 PM - 04:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Prukalpa Sankar", "Affiliated Companies": "Atlan", "Customer/Prospect Tags": "", "Topic Tags": "Context/Knowledge Layer, Vendor watch: Atlan", "Why Attend": "Strategic narrative: Context/Knowledge Layer", "Day": "Monday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "Meet Your DSH @ Basecamp Reception", "Date & Time": "Monday, June 01 | 06:15 PM - 07:15 PM PDT", "Track": "AI Pop Up", "Speakers": "Vivek Pant; Pooja Sahu; Pawel Potasinski; Ruchi Soni; Karthik Raman; Rajiv Gupta; St\u00e9phane Burwash; Anastasiia Stefanska; Jan Laznicka; Jan Difko; Alexander Murugesan; Mandeep Singh", "Affiliated Companies": "The Hartford; Schroders; Infinite Services; Accenture; LTM; Kipi.ai; Infostrux; TUI; Billigence; EY Newzealand; Texas capital", "Customer/Prospect Tags": "EY (Partner)", "Topic Tags": "", "Why Attend": "RAI partner speaking: EY (Partner)", "Day": "Monday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Deploying Geospatial Solutions Using Cortex Code Skills", "Date & Time": "Monday, June 01 | 06:30 PM - 08:00 PM PDT", "Track": "BI & Analytics", "Speakers": "Rebecca O'Connor; Piotr Paczewski", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Monday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "AI Agents and Forward Deployed Engineering for Commercial Decision Intelligence", "Date & Time": "Tuesday, June 02 | 11:30 AM - 12:15 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Mackenzie Allen; Dimitrije Jankovic", "Affiliated Companies": "Snowflake; Sanofi", "Customer/Prospect Tags": "", "Topic Tags": "Decision Intelligence, Agentic AI", "Why Attend": "Direct overlap with RAI positioning: Decision Intelligence", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Building Agents on the Data Your Business Trusts", "Date & Time": "Tuesday, June 02 | 11:30 AM - 12:15 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Olivia Morgan; Shikhar Kwatra", "Affiliated Companies": "OpenAI", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Openai", "Why Attend": "Agentic/GenAI intersected with vendor watch: Openai", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Industry Summit Tour \u2014 Telecom", "Date & Time": "Tuesday, June 02 | 11:30 AM - 01:00 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "Telco / Networks", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Lunch Hosted by dbt Labs", "Date & Time": "Tuesday, June 02 | 11:30 AM - 01:00 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "How to Scale AI in the Enterprise: Lessons from Snowflake\u2019s CIO and CDO Teams", "Date & Time": "Tuesday, June 02 | 11:30 AM - 12:00 PM PDT", "Track": "Executive Content", "Speakers": "James Isbell; Karthik Gopalakrishnan; Hamin Oh; Saba Mirza", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "The Future of Retail: Architecting for the Agentic Era with Snowflake", "Date & Time": "Tuesday, June 02 | 11:30 AM - 12:15 PM PDT", "Track": "Industry Innovation", "Speakers": "Jeff Greenfield; Ravi Kota; Amanda Cameron-Windsor; Paul Winsor", "Affiliated Companies": "Chewy; Callaway Golf; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Retail / CPG, Industry Future-Of", "Why Attend": "Strategic narrative: Industry Future-Of", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "What's New: Snowflake Intelligence and Cortex Agents for Real Business Impact", "Date & Time": "Tuesday, June 02 | 11:30 AM - 12:15 PM PDT", "Track": "What's New in Snowflake", "Speakers": "Unni Velayudhan; Effie Goenawan; William Allen", "Affiliated Companies": "Wolfspeed; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "AI Readiness at Siemens: From Governed Semantics to Scalable Agents on Snowflake", "Date & Time": "Tuesday, June 02 | 12:00 PM - 12:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Tomas Corte Real; Vasco Feria", "Affiliated Companies": "Siemens", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, Agentic AI", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "How a Universal Semantic Layer Provides Context for AI", "Date & Time": "Tuesday, June 02 | 12:00 PM - 12:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "David Mariani", "Affiliated Companies": "AtScale, Inc.", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Powering the Future of Merchant Experiences with Snowflake Cortex AI", "Date & Time": "Tuesday, June 02 | 12:00 PM - 12:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Mark Kubik; Billy Cummins", "Affiliated Companies": "Global Payments Inc.; Global Payments", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "The CDO Playbook in the Era of AI: The CDO Executive Panel", "Date & Time": "Tuesday, June 02 | 12:15 PM - 12:45 PM PDT", "Track": "Executive Content", "Speakers": "David Haney; Maddy Want; Glenn Walker; Anahita Tafvizi", "Affiliated Companies": "Cambia Health Solutions; Fanatics; Luminate Data; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Get More Done with OpenAI Agents Powered by Snowflake Data", "Date & Time": "Tuesday, June 02 | 12:30 PM - 12:50 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Evan Weise", "Affiliated Companies": "OpenAI", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Openai", "Why Attend": "Agentic/GenAI intersected with vendor watch: Openai", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Make Your Snowflake Data AI Ready with Cortex Code and Bigeye", "Date & Time": "Tuesday, June 02 | 12:30 PM - 12:50 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Eleanor Treharne-Jones", "Affiliated Companies": "Bigeye", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Ontology on Snowflake: From Unified Data to AI-Powered Intelligence", "Date & Time": "Tuesday, June 02 | 12:30 PM - 12:50 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Tianxia Jia", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "When the Interface Is an Agent: Re-imagining Your Customer Context Layer", "Date & Time": "Tuesday, June 02 | 12:30 PM - 12:50 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Yali Sassoon", "Affiliated Companies": "Snowplow", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Context/Knowledge Layer", "Why Attend": "Strategic narrative: Context/Knowledge Layer", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Context Layer? Semantic Layer? Ontology? Knowledge Graph? A Spicy Debate", "Date & Time": "Tuesday, June 02 | 01:00 PM - 01:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Prukalpa Sankar; Jessica Talisman; Cindi Howson; Austin Kronz", "Affiliated Companies": "Atlan; Ontology Pipeline; ThoughtSpot", "Customer/Prospect Tags": "", "Topic Tags": "Knowledge Graph, Ontology / Semantic Layer, Context/Knowledge Layer, Vendor watch: Thoughtspot, Atlan", "Why Attend": "Direct overlap with RAI positioning: Knowledge Graph, Ontology / Semantic Layer", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Industry Summit Tour \u2014 Manufacturing", "Date & Time": "Tuesday, June 02 | 01:00 PM - 02:30 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "Supply Chain / Manufacturing", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "Someone Will: Building AI Agents on Snowflake Before Your Competitors Do", "Date & Time": "Tuesday, June 02 | 01:00 PM - 01:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Vincent Yates", "Affiliated Companies": "phData", "Customer/Prospect Tags": "phData (Partner)", "Topic Tags": "Agentic AI", "Why Attend": "RAI partner speaking: phData (Partner)", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "The CIO\u2019s Guide to AI ROI: An Executive Panel", "Date & Time": "Tuesday, June 02 | 01:00 PM - 01:30 PM PDT", "Track": "Executive Content", "Speakers": "Mike Blandina; Daniel Lemont; Scott Jessee", "Affiliated Companies": "Snowflake; Ally; Delta Dental Plans Association", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "The Future of Sales: How Agentic AI Is Reinventing B2B Sales", "Date & Time": "Tuesday, June 02 | 01:00 PM - 01:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Mark Rupert; Duncan Avis", "Affiliated Companies": "Canva; Ernst & Young", "Customer/Prospect Tags": "EY (Partner)", "Topic Tags": "Agentic AI", "Why Attend": "RAI partner speaking: EY (Partner)", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Batch Data Extraction at Scale with Cortex AI Functions", "Date & Time": "Tuesday, June 02 | 01:30 PM - 03:00 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Sho Tanaka; Jessie Felix", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "Move Faster with Cortex Code and Deloitte: From Data Discovery to Delivery", "Date & Time": "Tuesday, June 02 | 01:30 PM - 03:00 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Rupesh Dandekar", "Affiliated Companies": "Deloitte Consulting LLP", "Customer/Prospect Tags": "Deloitte (Partner)", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "RAI partner speaking: Deloitte (Partner)", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "A Conversation with Alysa Liu", "Date & Time": "Tuesday, June 02 | 02:00 PM - 02:45 PM PDT", "Track": "Industry Innovation", "Speakers": "Alysa Liu; Dounia Senawi", "Affiliated Companies": "Deloitte", "Customer/Prospect Tags": "Deloitte (Partner)", "Topic Tags": "", "Why Attend": "RAI partner speaking: Deloitte (Partner)", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "The Future of Financial Services: Agents with Industry Context and Connectivity", "Date & Time": "Tuesday, June 02 | 02:00 PM - 02:45 PM PDT", "Track": "Industry Innovation", "Speakers": "Mallik Yemme; Rinesh Patel; Sachin Mehta", "Affiliated Companies": "JP Morgan Chase; Snowflake; U.S. Bank", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Financial Services, Industry Future-Of", "Why Attend": "Strategic narrative: Industry Future-Of", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "The Future of Media: Composable Solutions for People and Agents", "Date & Time": "Tuesday, June 02 | 02:00 PM - 02:45 PM PDT", "Track": "Industry Innovation", "Speakers": "Dennis Buchheim; Derek Leonard; Mike Jones; Sherene Hial; Nathan McCarthy; Eric Bosco", "Affiliated Companies": "Snowflake; Netflix; Warner Music Group; SiriusXM Pandora; DIRECTV; The Trade Desk", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Industry Future-Of", "Why Attend": "Strategic narrative: Industry Future-Of", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Transform Your Data Estate for Agentic AI and Apps with Snowflake and Microsoft", "Date & Time": "Tuesday, June 02 | 02:00 PM - 02:45 PM PDT", "Track": "Architectures & Interoperability", "Speakers": "Matthew Hicks; Narendra Joshi", "Affiliated Companies": "Microsoft", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Microsoft", "Why Attend": "Agentic/GenAI intersected with vendor watch: Microsoft", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Your Marketing ROI in Under Eight Minutes: Powered by Snowflake Intelligence", "Date & Time": "Tuesday, June 02 | 02:00 PM - 02:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Dan Wentworth", "Affiliated Companies": "Domo", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Industry Summit Tour \u2014 Public Sector", "Date & Time": "Tuesday, June 02 | 02:30 PM - 04:00 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "The Intelligent Travel Enterprise: From Data to Decisions at Scale", "Date & Time": "Tuesday, June 02 | 02:30 PM - 03:15 PM PDT", "Track": "Industry Innovation", "Speakers": "Rahul Todkar; Anirvan Mukherjee; Whitnee Hawthorne; Amit Gupta", "Affiliated Companies": "Tripadvisor; Wynn Resorts; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Decision Intelligence", "Why Attend": "Direct overlap with RAI positioning: Decision Intelligence", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "AI-Powered Hedge Fund Transformation: Optimizing Snowflake with Cortex Code", "Date & Time": "Tuesday, June 02 | 03:00 PM - 03:20 PM PDT", "Track": "Migrations & Modernization", "Speakers": "Mike Siswanto; Wyatt Mullins", "Affiliated Companies": "Verition Fund Management; BlueCloud", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Tuesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "Driving Advanced Supply Chain AI Use Cases with Snowflake at AT&T", "Date & Time": "Tuesday, June 02 | 03:00 PM - 03:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "April Stanbary", "Affiliated Companies": "AT&T", "Customer/Prospect Tags": "AT&T", "Topic Tags": "Supply Chain / Manufacturing", "Why Attend": "RAI account on stage: AT&T", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Happy Hour Hosted by Wisdom AI", "Date & Time": "Tuesday, June 02 | 03:00 PM - 05:00 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Tableau and Snowflake: Demystifying the Open Semantic Interchange", "Date & Time": "Tuesday, June 02 | 03:00 PM - 03:45 PM PDT", "Track": "BI & Analytics", "Speakers": "Tara Morton; Erik Teutsch", "Affiliated Companies": "Salesforce", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, Open Semantics", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "The Enterprise Context Layer: Atlan's Thesis, Workday's Proof in Production", "Date & Time": "Tuesday, June 02 | 03:00 PM - 03:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Joe DosSantos; Prukalpa Sankar", "Affiliated Companies": "Workday; Atlan", "Customer/Prospect Tags": "", "Topic Tags": "Context/Knowledge Layer, Vendor watch: Atlan, Workday", "Why Attend": "Strategic narrative: Context/Knowledge Layer", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Turning Data into Decisions: How to Stop Paying the Reporting Tax", "Date & Time": "Tuesday, June 02 | 03:00 PM - 03:20 PM PDT", "Track": "BI & Analytics", "Speakers": "Sameer Vuyyuru", "Affiliated Companies": "Capita", "Customer/Prospect Tags": "", "Topic Tags": "Decision Intelligence", "Why Attend": "Direct overlap with RAI positioning: Decision Intelligence", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "What's New: Swiftly Take Your Ideas to Production with Cortex Code", "Date & Time": "Tuesday, June 02 | 03:00 PM - 03:45 PM PDT", "Track": "What's New in Snowflake", "Speakers": "Siddharth Dwivedi; Matt Luizzi; Aria Attar", "Affiliated Companies": "Snowflake; WHOOP", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "Agentic Procurement: Accelerating Drug Development at Sanofi", "Date & Time": "Tuesday, June 02 | 04:00 PM - 04:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Josh Waite; Amadeusz Andrzejewski; Yasmin Zaimi", "Affiliated Companies": "Elementum AI; Deloitte; Sanofi", "Customer/Prospect Tags": "Deloitte (Partner)", "Topic Tags": "Agentic AI", "Why Attend": "RAI partner speaking: Deloitte (Partner)", "Day": "Tuesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "Powering Agentic AI with Snowflake Intelligence, Snowflake Cortex, Infosys Topaz", "Date & Time": "Tuesday, June 02 | 04:00 PM - 04:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Gopal Sugavanam; Amit Patel; Wayne Frawner", "Affiliated Companies": "Infosys; Truist; ExxonMobil Global Services Company", "Customer/Prospect Tags": "Exxon Mobil", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "RAI account on stage: Exxon Mobil", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "The Agentic Enterprise: How Snowflake Builds AI Apps For Its Own Business Units", "Date & Time": "Tuesday, June 02 | 04:00 PM - 04:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Gaurav Singodia; Abyakta Lenka; Nirmal Raisoni", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Agentic Enterprise (Strategic)", "Why Attend": "Strategic narrative: Agentic Enterprise (Strategic)", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Eval-Driven Agent Optimization with Cortex Code CLI", "Date & Time": "Tuesday, June 02 | 04:30 PM - 06:00 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Elliott Botwick", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Reasoning / Optimization, LLM Specialization / Eval, Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Direct overlap with RAI positioning: Reasoning / Optimization, LLM Specialization / Eval", "Day": "Tuesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Hands-On Lab: Performance Tuning and Cost Optimization", "Date & Time": "Tuesday, June 02 | 06:30 PM - 08:00 PM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Pranav Pokharel; Anoop Gupta", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Reasoning / Optimization", "Why Attend": "Direct overlap with RAI positioning: Reasoning / Optimization", "Day": "Tuesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "AI in Production: What Breaks, What Scales", "Date & Time": "Wednesday, June 03 | 09:00 AM - 10:30 AM PDT", "Track": "CTO Circle", "Speakers": "David Nicholson; Vivek Raghunathan; Jon McNeill; Jeremy Burton", "Affiliated Companies": "The Futurum Group; Snowflake; DVX", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Activating Enterprise Audience Intelligence with Snowflake Intelligence", "Date & Time": "Wednesday, June 03 | 11:00 AM - 11:45 AM PDT", "Track": "Application Development", "Speakers": "Srikanth Manduri; Ankur Jain", "Affiliated Companies": "Anblicks; Acxiom", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "AT&T\u2019s Interoperable Iceberg Journey", "Date & Time": "Wednesday, June 03 | 11:00 AM - 11:45 AM PDT", "Track": "Architectures & Interoperability", "Speakers": "Mark Holcomb", "Affiliated Companies": "AT&T", "Customer/Prospect Tags": "AT&T", "Topic Tags": "", "Why Attend": "RAI account on stage: AT&T", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Building Agentic Enterprise Workflows with Trusted Data", "Date & Time": "Wednesday, June 03 | 11:00 AM - 11:20 AM PDT", "Track": "Generative AI & Agents", "Speakers": "Rajeev Srinivasan", "Affiliated Companies": "Informatica", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Informatica", "Why Attend": "Agentic/GenAI intersected with vendor watch: Informatica", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Building Enterprise AI Agents Using Snowflake Intelligence", "Date & Time": "Wednesday, June 03 | 11:00 AM - 11:20 AM PDT", "Track": "Generative AI & Agents", "Speakers": "Sait Izmit", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Built to Perform: Elementum and Snowflake for Agentic Retail Support", "Date & Time": "Wednesday, June 03 | 11:00 AM - 11:45 AM PDT", "Track": "Generative AI & Agents", "Speakers": "Porter Hoskins; Alexander Miller", "Affiliated Companies": "Elementum AI; Under Armour", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Retail / CPG", "Why Attend": "Agentic/GenAI intersected with vertical: Retail / CPG", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Deploy, Version, Test and Manage Snowflake Openflow Connectors Using Cortex Code", "Date & Time": "Wednesday, June 03 | 11:00 AM - 12:30 PM PDT", "Track": "Data Engineering & Pipelines", "Speakers": "Pierre Villard; Dan Chaffelson", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Industry Summit Tour \u2014 Retail", "Date & Time": "Wednesday, June 03 | 11:00 AM - 12:30 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "Retail / CPG", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Get ROI from Your Agents with Amazon Bedrock AgentCore, MCP and Snowflake", "Date & Time": "Wednesday, June 03 | 11:00 AM - 11:45 AM PDT", "Track": "Generative AI & Agents", "Speakers": "Nidhi Gupta", "Affiliated Companies": "AWS", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Aws", "Why Attend": "Agentic/GenAI intersected with vendor watch: Aws", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Maximizing Velocity, Containing Risk", "Date & Time": "Wednesday, June 03 | 11:00 AM - 12:30 PM PDT", "Track": "CTO Circle", "Speakers": "Caitlin Colgrove; Arun Rajamanickam; Chris Kozlowski; David Gildeh; Shruti Bhat; Corey Burke", "Affiliated Companies": "Hex; Project44; Barclays; Netflix; Snowflake; Dialpad", "Customer/Prospect Tags": "", "Topic Tags": "Vendor watch: Hex", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "The Data Gap Holding AI Back: Lessons from LPL Financial and Morgan Stanley", "Date & Time": "Wednesday, June 03 | 11:00 AM - 11:20 AM PDT", "Track": "Migrations & Modernization", "Speakers": "Vick Patel; Krithika Venkat; Ashish Shahjee", "Affiliated Companies": "CAPGEMINI; Morgan Stanley; LPL Financial", "Customer/Prospect Tags": "Morgan Stanley", "Topic Tags": "", "Why Attend": "RAI account on stage: Morgan Stanley", "Day": "Wednesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "Beyond Ingestion: How Zendesk Scales Global Insights with Fivetran and Snowflake", "Date & Time": "Wednesday, June 03 | 11:30 AM - 11:50 AM PDT", "Track": "Data Engineering & Pipelines", "Speakers": "Chinmay Vaidya; Akshay Agrawal", "Affiliated Companies": "Zendesk", "Customer/Prospect Tags": "Zendesk", "Topic Tags": "", "Why Attend": "RAI account on stage: Zendesk", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Lunch Hosted by Kumo", "Date & Time": "Wednesday, June 03 | 11:30 AM - 01:00 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "From AI Hype to Enterprise Value: Closing the Gap", "Date & Time": "Wednesday, June 03 | 11:30 AM - 12:15 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Farooque Munshi; Subin Abraham; Krithika Venkat", "Affiliated Companies": "EY; DAIKIN INDUSTRIES,LTD; Morgan Stanley", "Customer/Prospect Tags": "EY (Partner), Morgan Stanley", "Topic Tags": "", "Why Attend": "RAI account on stage: Morgan Stanley", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Scaling Smart: Optimization Framework Behind Samsung Ads DMP's 73% Cost Savings", "Date & Time": "Wednesday, June 03 | 11:30 AM - 11:50 AM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Kapil Malviya", "Affiliated Companies": "Samsung", "Customer/Prospect Tags": "", "Topic Tags": "Reasoning / Optimization", "Why Attend": "Direct overlap with RAI positioning: Reasoning / Optimization", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Architecting Semantic Memory: Scaling Domain Wisdom with Snowflake Intelligence", "Date & Time": "Wednesday, June 03 | 12:00 PM - 12:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Marcus Poh; David Ramsden", "Affiliated Companies": "Xero", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Automating Governed Analytics with Qlik MCP and Snowflake Cortex Code", "Date & Time": "Wednesday, June 03 | 12:00 PM - 12:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Dalton Ruer", "Affiliated Companies": "Qlik", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Cost Optimization at Scale: Booking.com\u2019s Journey with SELECT", "Date & Time": "Wednesday, June 03 | 12:00 PM - 12:20 PM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Adam Healy; Ian Whitestone", "Affiliated Companies": "Booking.com; SELECT by DoiT", "Customer/Prospect Tags": "", "Topic Tags": "Reasoning / Optimization", "Why Attend": "Direct overlap with RAI positioning: Reasoning / Optimization", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Data Engineering for AI: dbt Projects, Semantic Views and Cortex Code", "Date & Time": "Wednesday, June 03 | 12:00 PM - 12:45 PM PDT", "Track": "Data Engineering & Pipelines", "Speakers": "Jeremiah Hansen", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, Cortex / Snowflake Intelligence", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "From Evaluation to Co-Innovation: How SoFi Built a Semantic Layer with Snowflake", "Date & Time": "Wednesday, June 03 | 12:00 PM - 12:45 PM PDT", "Track": "BI & Analytics", "Speakers": "Harsh Langalia; Sreekanth Pendli", "Affiliated Companies": "SoFi Inc", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, LLM Specialization / Eval", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer, LLM Specialization / Eval", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "How Chime Uses Call Transcripts to Reduce Customer Churn with Cortex AI", "Date & Time": "Wednesday, June 03 | 12:00 PM - 12:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Philip Denkabe; Tianxia Jia", "Affiliated Companies": "Chime Financial; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "Meet a Data Superhero: AI Strategy \u2014 Turning Data into Competitive Advantage", "Date & Time": "Wednesday, June 03 | 12:00 PM - 01:00 PM PDT", "Track": "AI Pop Up", "Speakers": "Douglas Day; Jan Difko; Rajiv Gupta; Jan Laznicka; Sofia Pierini; Pawel Potasinski; Karthik Raman; Ruchi Soni", "Affiliated Companies": "datalab; Billigence; Kipi.ai; EY; Infinite Services; LTM; Accenture", "Customer/Prospect Tags": "EY (Partner)", "Topic Tags": "", "Why Attend": "RAI partner speaking: EY (Partner)", "Day": "Wednesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "The Future of Telecom: Agentic Workflows on Intelligent Infrastructure", "Date & Time": "Wednesday, June 03 | 12:00 PM - 12:45 PM PDT", "Track": "Industry Innovation", "Speakers": "Sinan Akkaya; Keisuke Suzuki; Joji Philip; Gheorghe Spiride", "Affiliated Companies": "AT&T; NTT DOCOMO; Snowflake; Ericsson", "Customer/Prospect Tags": "AT&T", "Topic Tags": "Agentic AI, Telco / Networks, Industry Future-Of", "Why Attend": "RAI account on stage: AT&T", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Accelerate and Automate: Mastering Snowflake ML with Cortex Code", "Date & Time": "Wednesday, June 03 | 12:30 PM - 12:50 PM PDT", "Track": "Machine Learning", "Speakers": "Caleb Baechtold; Ghazaleh Kazeminejad", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "Context Layer in Practice: How Workday Builds Trustworthy AI Agents | Atlan", "Date & Time": "Wednesday, June 03 | 12:30 PM - 12:50 PM PDT", "Track": "Governance & Security", "Speakers": "Jon Chen; Austin Kronz", "Affiliated Companies": "Workday; Atlan", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Context/Knowledge Layer, Vendor watch: Atlan, Workday", "Why Attend": "Strategic narrative: Context/Knowledge Layer", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "How WHOOP Uses Cortex Code as an AI Control Plane for Agentic Intelligence", "Date & Time": "Wednesday, June 03 | 12:30 PM - 01:15 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Brendan Farley; Carolyn Chambers", "Affiliated Companies": "Snowflake; WHOOP", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Snowflake Intelligence: Your Team's Most Complex 'Whys' at Your Fingertips", "Date & Time": "Wednesday, June 03 | 12:30 PM - 01:15 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Effie Goenawan; Arun Agarwal; Andie George", "Affiliated Companies": "Snowflake; Fanatics", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "AI and the New Software Lifecycle: From Code to Production", "Date & Time": "Wednesday, June 03 | 01:00 PM - 01:30 PM PDT", "Track": "Executive Content", "Speakers": "Corey Burke; Parvez Naqvi; Jeremy Burton", "Affiliated Companies": "Dialpad; Capital One; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Building Real-Time Fraud Detection with Agentic ML in Snowflake", "Date & Time": "Wednesday, June 03 | 01:00 PM - 02:30 PM PDT", "Track": "Machine Learning", "Speakers": "Chanin Nantasenamat; Sho Tanaka", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Financial Services", "Why Attend": "Agentic/GenAI intersected with vertical: Financial Services", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Industry Summit Tour \u2014 Financial Services", "Date & Time": "Wednesday, June 03 | 01:00 PM - 02:30 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "Financial Services", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Move Beyond Prototypes to High-Velocity AI Products Using Snowflake Intelligence", "Date & Time": "Wednesday, June 03 | 01:00 PM - 01:20 PM PDT", "Track": "Governance & Security", "Speakers": "Lo\u00efc Giraud; Shankha Bhattachary", "Affiliated Companies": "Novo Nordisk", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "The Builder\u2019s Guide to Sigma AI Apps: Workflows, Cortex Agents and AI Functions", "Date & Time": "Wednesday, June 03 | 01:00 PM - 02:30 PM PDT", "Track": "BI & Analytics", "Speakers": "Shah Gill", "Affiliated Companies": "Sigma", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Your Data Has a New Consumer: Building a Foundation for Agentic AI", "Date & Time": "Wednesday, June 03 | 01:00 PM - 01:20 PM PDT", "Track": "Data Engineering & Pipelines", "Speakers": "David Hrncir", "Affiliated Companies": "Fivetran", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Fivetran", "Why Attend": "Agentic/GenAI intersected with vendor watch: Fivetran", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Designing Engineering Teams for AI", "Date & Time": "Wednesday, June 03 | 01:30 PM - 03:00 PM PDT", "Track": "CTO Circle", "Speakers": "Jeremy Burton; Harjot Gill; Parvez Naqvi; Jordan Topoleski; Qi Jin", "Affiliated Companies": "Snowflake; CodeRabbit Inc.; Capital One; Cursor; Cerebras AI", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Hex: Under the Hood of the World's Most Advanced AI Data Agent", "Date & Time": "Wednesday, June 03 | 01:30 PM - 01:50 PM PDT", "Track": "BI & Analytics", "Speakers": "Carlos Aguilar", "Affiliated Companies": "Hex", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Hex", "Why Attend": "Agentic/GenAI intersected with vendor watch: Hex", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Prep Exposure\u2011Level Advertising Data for Enterprise AI with Snowflake Cortex", "Date & Time": "Wednesday, June 03 | 01:30 PM - 01:50 PM PDT", "Track": "Industry Innovation", "Speakers": "Natalie Kansteiner; Mayur Katariya", "Affiliated Companies": "The Trade Desk; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "The Future of Manufacturing: Agentic Transformation", "Date & Time": "Wednesday, June 03 | 01:30 PM - 02:15 PM PDT", "Track": "Industry Innovation", "Speakers": "Tim Long; Tony Leopold; Ross Schalmo", "Affiliated Companies": "Snowflake; United Rentals; Eaton", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Supply Chain / Manufacturing, Industry Future-Of", "Why Attend": "Strategic narrative: Industry Future-Of", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "User Group Meetup: Women on Snowflake", "Date & Time": "Wednesday, June 03 | 01:30 PM - 02:30 PM PDT", "Track": "AI Pop Up", "Speakers": "Pooja Sahu; Anastasiia Stefanska; Ruchi Soni; Sofia Pierini", "Affiliated Companies": "Schroders; TUI; Accenture; EY", "Customer/Prospect Tags": "EY (Partner)", "Topic Tags": "", "Why Attend": "RAI partner speaking: EY (Partner)", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Building an Interoperable Lakehouse with Snowflake Horizon and Cortex Code", "Date & Time": "Wednesday, June 03 | 02:00 PM - 02:20 PM PDT", "Track": "Architectures & Interoperability", "Speakers": "Piotr Paczewski; Frans van Dortmont", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "DaaS on Snowflake: Designing for Scale, Governance and Decision Intelligence", "Date & Time": "Wednesday, June 03 | 02:00 PM - 02:45 PM PDT", "Track": "BI & Analytics", "Speakers": "Bonny Joy", "Affiliated Companies": "Comcast", "Customer/Prospect Tags": "", "Topic Tags": "Decision Intelligence", "Why Attend": "Direct overlap with RAI positioning: Decision Intelligence", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "The C-Suite AI Mandate: The Executive Blueprint for Organizational Success", "Date & Time": "Wednesday, June 03 | 02:00 PM - 02:30 PM PDT", "Track": "Executive Content", "Speakers": "Diane Brady; Makenna Ralston; Denise Persson", "Affiliated Companies": "Fortune; CommBank iQ; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Capital One Software: Using Context and AI for Cost Optimization and Security", "Date & Time": "Wednesday, June 03 | 02:30 PM - 03:15 PM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Jeff Chou", "Affiliated Companies": "Capital One Software", "Customer/Prospect Tags": "", "Topic Tags": "Reasoning / Optimization", "Why Attend": "Direct overlap with RAI positioning: Reasoning / Optimization", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Deliver Reliable, Explainable, Traceable Agents with dbt", "Date & Time": "Wednesday, June 03 | 02:30 PM - 02:50 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Chakshu Mehta; Sam Ferguson", "Affiliated Companies": "dbt Labs", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Dbt Labs", "Why Attend": "Agentic/GenAI intersected with vendor watch: Dbt Labs", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Executive Industry Summit Tour \u2014 Healthcare and Life Sciences", "Date & Time": "Wednesday, June 03 | 02:30 PM - 04:00 PM PDT", "Track": "Executive Content", "Speakers": "", "Affiliated Companies": "", "Customer/Prospect Tags": "", "Topic Tags": "Healthcare / Life Sciences", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "How Truist Is Building the Data Foundation That Makes Cortex AI Possible", "Date & Time": "Wednesday, June 03 | 02:30 PM - 03:15 PM PDT", "Track": "Architectures & Interoperability", "Speakers": "Anish Abraham; Jessie Smith", "Affiliated Companies": "Truist; Ataccama", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "What\u2019s New: Zero to a Trusted Semantic Layer in Snowflake", "Date & Time": "Wednesday, June 03 | 02:30 PM - 03:15 PM PDT", "Track": "What's New in Snowflake", "Speakers": "Abhinav Vadrevu; Josh Klahr", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "20-Minute Threat Hunt: Building and Deploying a Cybersecurity Agent with Cortex", "Date & Time": "Wednesday, June 03 | 03:00 PM - 03:20 PM PDT", "Track": "Governance & Security", "Speakers": "vince luongo; Jake Berkowsky", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Beyond Chat: Activating Snowflake Cortex Agents for Enterprise Productivity", "Date & Time": "Wednesday, June 03 | 03:00 PM - 03:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Amy McNee", "Affiliated Companies": "Boomi", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Cortex Code for Full Lifecycle Development", "Date & Time": "Wednesday, June 03 | 03:00 PM - 03:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Guy Adams", "Affiliated Companies": "DataOps.live", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Honda\u2019s Data Mesh Strategy: Apache Iceberg, Cortex AI and Horizon Catalog", "Date & Time": "Wednesday, June 03 | 03:00 PM - 03:45 PM PDT", "Track": "Architectures & Interoperability", "Speakers": "Tadafumi Nogawa; Masaki Nakano", "Affiliated Companies": "Honda R&D Co., Ltd.  /SDV R&D Center; Honda R&D Co., Ltd.", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "The Frontier of Agentic Enterprise: Founders, VCs and Snowflake", "Date & Time": "Wednesday, June 03 | 03:00 PM - 03:30 PM PDT", "Track": "Executive Content", "Speakers": "Chris Yeh; Jo\u00e3o Moura; Madison Faulkner; Anahita Tafvizi", "Affiliated Companies": "Blitzscaling Ventures; CrewAI; NEA; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Strategic / VC Lens, Strategic / VC Lens", "Why Attend": "Strategic narrative: Strategic / VC Lens, Strategic / VC Lens", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Data Discovery and Semantic Context for Agentic AI with Horizon Catalog", "Date & Time": "Wednesday, June 03 | 03:30 PM - 04:15 PM PDT", "Track": "Governance & Security", "Speakers": "Riccardo Muti; Shinji Kim", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, Agentic AI", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "How OpenAI Keeps Petabytes of LLM Samples Fresh in Snowflake", "Date & Time": "Wednesday, June 03 | 03:30 PM - 03:50 PM PDT", "Track": "Data Engineering & Pipelines", "Speakers": "Yi Wang", "Affiliated Companies": "OpenAI", "Customer/Prospect Tags": "", "Topic Tags": "GenAI / LLM, Vendor watch: Openai", "Why Attend": "Agentic/GenAI intersected with vendor watch: Openai", "Day": "Wednesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "Morgan Stanley\u2019s Journey to an AI-Driven Marketing Engine", "Date & Time": "Wednesday, June 03 | 03:30 PM - 04:15 PM PDT", "Track": "Industry Innovation", "Speakers": "Frank Hong; Manoj Arora", "Affiliated Companies": "Morgan Stanley", "Customer/Prospect Tags": "Morgan Stanley", "Topic Tags": "", "Why Attend": "RAI account on stage: Morgan Stanley", "Day": "Wednesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "Blue Yonder: Accelerating Business Transformation with Agentic AI", "Date & Time": "Wednesday, June 03 | 04:00 PM - 04:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Chris Burchett", "Affiliated Companies": "Blue Yonder, Inc.", "Customer/Prospect Tags": "Blue Yonder (Customer)", "Topic Tags": "Agentic AI", "Why Attend": "RAI account on stage: Blue Yonder (Customer)", "Day": "Wednesday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "Building Agents Inside the Knowledge Layer: A Financial Services Story", "Date & Time": "Wednesday, June 03 | 04:00 PM - 04:45 PM PDT", "Track": "Governance & Security", "Speakers": "Satyen Sangani", "Affiliated Companies": "Alation", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Financial Services, Context/Knowledge Layer", "Why Attend": "Strategic narrative: Context/Knowledge Layer", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Building Snowflake Intelligence Agents: Hands-on Lab", "Date & Time": "Wednesday, June 03 | 04:00 PM - 05:30 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Carlos Carrero; Arun Agarwal", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "From Star Schema to Snowflake Intelligence in Two JIRA Tickets", "Date & Time": "Wednesday, June 03 | 04:00 PM - 04:20 PM PDT", "Track": "Data Engineering & Pipelines", "Speakers": "Matthew Farmer; Arawan Gajajiva", "Affiliated Companies": "Matillion", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Unlocking RAG on Complex Documents: LandingAI Meets Snowflake Intelligence", "Date & Time": "Wednesday, June 03 | 04:00 PM - 04:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Andrea Kropp", "Affiliated Companies": "LandingAI", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Wednesday"}, {"Priority": "P2 \u2014 Exec/CTO", "Session Title": "Zero to AI: How to Accelerate AI Implementation with Forward Deployed Engineers", "Date & Time": "Wednesday, June 03 | 04:00 PM - 04:30 PM PDT", "Track": "Executive Content", "Speakers": "Luv Kothari; Anahita Tafvizi; Durgesh Das", "Affiliated Companies": "Snowflake; Intercontinental Exchange / New York Stock Exchange", "Customer/Prospect Tags": "", "Topic Tags": "", "Why Attend": "Exec/CTO audience \u2014 useful for narrative + relationship building", "Day": "Wednesday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "A Seamless Path to Managing at Scale with Organizations 2.0", "Date & Time": "Thursday, June 04 | 10:00 AM - 10:45 AM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Nareesh Komuravelly; Srujana Kandimalla; Yuki Yaguchi", "Affiliated Companies": "LSEG; Snowflake; Mitsui & Co., Ltd.", "Customer/Prospect Tags": "LSEG", "Topic Tags": "", "Why Attend": "RAI account on stage: LSEG", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Braze Operator AI: Automating Business Reviews with Snowflake Cortex AI", "Date & Time": "Thursday, June 04 | 10:00 AM - 10:45 AM PDT", "Track": "Generative AI & Agents", "Speakers": "kaitlyn wells; Fabio Rocca", "Affiliated Companies": "Snowflake; Braze", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Thursday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Build Governed, Compliant AI Apps Faster with Semantic Views and Cortex Code", "Date & Time": "Thursday, June 04 | 10:00 AM - 11:30 AM PDT", "Track": "BI & Analytics", "Speakers": "Abhinav Vadrevu; Fawad Qureshi", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, Cortex / Snowflake Intelligence", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Thursday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Open Semantic Interchange: Dimensions and Ontologies for Agents", "Date & Time": "Thursday, June 04 | 10:00 AM - 10:45 AM PDT", "Track": "BI & Analytics", "Speakers": "Josh Klahr; Ankit Tandon", "Affiliated Companies": "Snowflake; RelationalAI", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, Agentic AI, Open Semantics", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "What's New: Build, Test and Deploy Data Workflows Faster with Cortex Code", "Date & Time": "Thursday, June 04 | 10:00 AM - 10:45 AM PDT", "Track": "What's New in Snowflake", "Speakers": "Siddharth Dwivedi; Aria Attar; Alan Yu", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Agentic Coding for Data Teams: Claude Code", "Date & Time": "Thursday, June 04 | 10:30 AM - 10:50 AM PDT", "Track": "Generative AI & Agents", "Speakers": "Henrique Savelli", "Affiliated Companies": "Anthropic", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Anthropic", "Why Attend": "Agentic/GenAI intersected with vendor watch: Anthropic", "Day": "Thursday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "Meet a Data Superhero: AI-Ready Data", "Date & Time": "Thursday, June 04 | 10:30 AM - 11:30 AM PDT", "Track": "AI Pop Up", "Speakers": "Augusto Rosa; Arnaud Col; Rajiv Gupta; Alexander Murugesan; Mandeep Singh; Sofia Pierini; Pooja Sahu; Ruchi Soni", "Affiliated Companies": "Archetype Consulting; Keyrus; Kipi.ai; EY Newzealand; Texas capital; EY; Schroders; Accenture", "Customer/Prospect Tags": "EY (Partner)", "Topic Tags": "", "Why Attend": "RAI partner speaking: EY (Partner)", "Day": "Thursday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Accelerating AI-Ready Data with Open Semantic Interchange", "Date & Time": "Thursday, June 04 | 11:00 AM - 11:45 AM PDT", "Track": "BI & Analytics", "Speakers": "Josh Klahr; Khushboo Bhatia", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer, Open Semantics", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "AI Startups and Cortex Inference: Glean Building on the AI Data Cloud", "Date & Time": "Thursday, June 04 | 11:00 AM - 11:45 AM PDT", "Track": "Application Development", "Speakers": "Paras Mehra; Zubin Irani", "Affiliated Companies": "Snowflake; Glean", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "From Vision to Intelligence: How Cortex AI Accelerates FSFB\u2019s AI Journey", "Date & Time": "Thursday, June 04 | 11:00 AM - 11:20 AM PDT", "Track": "Generative AI & Agents", "Speakers": "Humberto Higuera", "Affiliated Companies": "Fundaci\u00f3n Santa Fe de Bogot\u00e1", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "How DTCC Enabled AI-Driven Data Cataloguing at Scale with Cortex and Streamlit", "Date & Time": "Thursday, June 04 | 11:00 AM - 11:45 AM PDT", "Track": "Performance & Cost Optimization", "Speakers": "Rohit Sharma; Sukanya Joshi", "Affiliated Companies": "Depository Trust and Clearance Corporation (DTCC); Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Thursday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "From Documents to Decisions: Agentic AI for Document-Driven Workflows", "Date & Time": "Thursday, June 04 | 11:30 AM - 11:50 AM PDT", "Track": "Generative AI & Agents", "Speakers": "Teon Rosandic", "Affiliated Companies": "LandingAI", "Customer/Prospect Tags": "", "Topic Tags": "Decision Intelligence, Agentic AI", "Why Attend": "Direct overlap with RAI positioning: Decision Intelligence", "Day": "Thursday"}, {"Priority": "P1 \u2014 Strategic", "Session Title": "The Agentic Enterprise: How Snowflake AI Is Redefining Work", "Date & Time": "Thursday, June 04 | 12:30 PM - 01:15 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Baris Gultekin", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Agentic Enterprise (Strategic)", "Why Attend": "Strategic narrative: Agentic Enterprise (Strategic)", "Day": "Thursday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "The Enterprise Intelligence Stack: How AI Agents Turn Data into Decision", "Date & Time": "Thursday, June 04 | 12:30 PM - 12:50 PM PDT", "Track": "Architectures & Interoperability", "Speakers": "Jitender Aswani", "Affiliated Companies": "Starburst", "Customer/Prospect Tags": "", "Topic Tags": "Decision Intelligence, Agentic AI", "Why Attend": "Direct overlap with RAI positioning: Decision Intelligence", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Using Cortex Agents for Monitoring Pipelines", "Date & Time": "Thursday, June 04 | 12:30 PM - 01:15 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Zachary Blackwood", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "An AI\u2010Native Operating Model: Lessons from Building Snowflake Cortex Code", "Date & Time": "Thursday, June 04 | 01:00 PM - 01:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Evelyn Kim; Umesh Unnikrishnan", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Thursday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Onboarding AI: From Business Ambiguity to AI Accuracy with Semantic Models", "Date & Time": "Thursday, June 04 | 01:00 PM - 01:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Serge Gershkovich", "Affiliated Companies": "SqlDBM", "Customer/Prospect Tags": "", "Topic Tags": "Ontology / Semantic Layer", "Why Attend": "Direct overlap with RAI positioning: Ontology / Semantic Layer", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "PagerDuty Uses Snowflake Cortex AI for Efficient, Consistent Customer Engagement", "Date & Time": "Thursday, June 04 | 01:00 PM - 01:20 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Manu Raj; Nick DiRienzo", "Affiliated Companies": "Pagerduty; Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence", "Why Attend": "Agentic/GenAI intersected with Snowflake-native AI", "Day": "Thursday"}, {"Priority": "P1 \u2014 Partner", "Session Title": "Turning AI Predictions into Real-World Water Solutions", "Date & Time": "Thursday, June 04 | 01:00 PM - 01:45 PM PDT", "Track": "Machine Learning", "Speakers": "Brian Killough; Matthew Finkle; Allison Janoch; Felipe Jorquera Diaz", "Affiliated Companies": "EY; Imagine H2O; Mapistry", "Customer/Prospect Tags": "EY (Partner)", "Topic Tags": "", "Why Attend": "RAI partner speaking: EY (Partner)", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "Zero PII, Full Insights: Cortex AI Transforms Insurance Claims Processing", "Date & Time": "Thursday, June 04 | 01:00 PM - 01:20 PM PDT", "Track": "Governance & Security", "Speakers": "Walid Elguebaly", "Affiliated Companies": "Global Excel Management", "Customer/Prospect Tags": "", "Topic Tags": "Cortex / Snowflake Intelligence, Financial Services", "Why Attend": "Agentic/GenAI intersected with vertical: Financial Services; Snowflake-native AI", "Day": "Thursday"}, {"Priority": "P1 \u2014 Core RAI Topic", "Session Title": "Accelerate AI Development: Build and Evaluate a RAG App with Cortex Code", "Date & Time": "Thursday, June 04 | 02:00 PM - 03:30 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Chris Caudill", "Affiliated Companies": "Snowflake", "Customer/Prospect Tags": "", "Topic Tags": "LLM Specialization / Eval, Cortex / Snowflake Intelligence", "Why Attend": "Direct overlap with RAI positioning: LLM Specialization / Eval", "Day": "Thursday"}, {"Priority": "P2 \u2014 Adjacent Topic + Context", "Session Title": "The Rise of the Agentic Harness", "Date & Time": "Thursday, June 04 | 02:30 PM - 02:50 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Romain Huet", "Affiliated Companies": "OpenAI", "Customer/Prospect Tags": "", "Topic Tags": "Agentic AI, Vendor watch: Openai", "Why Attend": "Agentic/GenAI intersected with vendor watch: Openai", "Day": "Thursday"}, {"Priority": "P0 \u2014 Customer/Prospect", "Session Title": "Building the Block Data MCP: A Blueprint for Gen AI Insights and Analytics", "Date & Time": "Wednesday, June 03 | 04:00 PM - 04:45 PM PDT", "Track": "Generative AI & Agents", "Speakers": "Alyssa Ransbury; Zach Stanford", "Affiliated Companies": "Block", "Customer/Prospect Tags": "Block", "Topic Tags": "Agentic AI, GenAI / LLM", "Why Attend": "RAI account on stage: Block \u2014 Snowflake-native data MCP play, relevant to RAI MCP/data agent positioning", "Day": "Wednesday"}], "coverage": [{"name": "Abu Dhabi Ports", "type": "Prospect", "domain": "adports.ae", "session_indexes": []}, {"name": "Mubadala", "type": "Prospect", "domain": "mubadala.com", "session_indexes": []}, {"name": "Dubai Airports", "type": "Prospect", "domain": "dubaiairports.ae", "session_indexes": []}, {"name": "TAB Food / TAB Gida", "type": "Prospect", "domain": "tabgida.com.tr", "session_indexes": []}, {"name": "TAV Airport", "type": "Prospect", "domain": "tav.aero", "session_indexes": []}, {"name": "ISA", "type": "Prospect", "domain": "isa.org", "session_indexes": []}, {"name": "Ecan/Allino", "type": "Prospect", "domain": "allino.com", "session_indexes": []}, {"name": "BMW", "type": "Prospect", "domain": "bmw.com", "session_indexes": []}, {"name": "Swedbank", "type": "Prospect", "domain": "swedbank.com", "session_indexes": []}, {"name": "Spark NZ", "type": "Prospect", "domain": "spark.co.nz", "session_indexes": []}, {"name": "IMCD", "type": "Prospect", "domain": "imcdgroup.com", "session_indexes": []}, {"name": "Roc360", "type": "Prospect", "domain": "roc360.com", "session_indexes": []}, {"name": "Tropos", "type": "Prospect", "domain": "tropos.com", "session_indexes": []}, {"name": "Planixs", "type": "Prospect", "domain": "planixs.com", "session_indexes": []}, {"name": "AllegroPay", "type": "Prospect", "domain": "allegro.pl", "session_indexes": []}, {"name": "LexisNexis", "type": "Prospect", "domain": "lexisnexis.com", "session_indexes": []}, {"name": "RELEX Solutions", "type": "Prospect", "domain": "relexsolutions.com", "session_indexes": []}, {"name": "QRDI", "type": "Prospect", "domain": "qrdi.org.qa", "session_indexes": []}, {"name": "PIF", "type": "Prospect", "domain": "pif.gov.sa", "session_indexes": []}, {"name": "QIA", "type": "Prospect", "domain": "qia.qa", "session_indexes": []}, {"name": "KDDI", "type": "Prospect", "domain": "kddi.com", "session_indexes": []}, {"name": "phData (Partner)", "type": "Partner", "domain": "phdata.io", "session_indexes": [5, 55]}, {"name": "EY (Partner)", "type": "Partner", "domain": "ey.com", "session_indexes": [13, 15, 36, 57, 92, 100, 116, 145, 157]}, {"name": "Tulapi", "type": "Prospect", "domain": "tulapi.com", "session_indexes": []}, {"name": "Block", "type": "Prospect", "domain": "block.xyz", "session_indexes": [161]}, {"name": "Zendesk", "type": "Prospect", "domain": "zendesk.com", "session_indexes": [19, 34, 90]}, {"name": "AT&T", "type": "Customer", "domain": "att.com", "session_indexes": [68, 81, 101]}, {"name": "Exxon Mobil", "type": "Prospect", "domain": "exxonmobil.com", "session_indexes": [18, 75]}, {"name": "Tredence (Partner)", "type": "Partner", "domain": "tredence.com", "session_indexes": []}, {"name": "LTI Mindtree (Partner)", "type": "Partner", "domain": "ltimindtree.com", "session_indexes": []}, {"name": "Telit", "type": "Prospect", "domain": "telit.com", "session_indexes": []}, {"name": "Vanguard", "type": "Prospect", "domain": "vanguard.com", "session_indexes": []}, {"name": "LSEG", "type": "Prospect", "domain": "lseg.com", "session_indexes": [139]}, {"name": "Morgan Stanley", "type": "Prospect", "domain": "morganstanley.com", "session_indexes": [8, 29, 89, 92, 132]}, {"name": "AMD", "type": "Prospect", "domain": "amd.com", "session_indexes": []}, {"name": "Deloitte (Partner)", "type": "Partner", "domain": "deloitte.com", "session_indexes": [59, 60, 74]}, {"name": "GAIC", "type": "Prospect", "domain": "gaic.com", "session_indexes": []}, {"name": "Biogen", "type": "Prospect", "domain": "biogen.com", "session_indexes": []}, {"name": "Pfizer", "type": "Prospect", "domain": "pfizer.com", "session_indexes": []}, {"name": "Novartis", "type": "Prospect", "domain": "novartis.com", "session_indexes": []}, {"name": "Marqeta", "type": "Prospect", "domain": "marqeta.com", "session_indexes": []}, {"name": "Grainger", "type": "Prospect", "domain": "grainger.com", "session_indexes": []}, {"name": "BNY (Customer)", "type": "Customer", "domain": "bny.com", "session_indexes": []}, {"name": "Blue Yonder (Customer)", "type": "Customer", "domain": "blueyonder.com", "session_indexes": [133]}], "company_domains": {"AT&T": "att.com", "BMW": "bmw.com", "Abu Dhabi Ports": "adports.ae", "Mubadala": "mubadala.com", "Dubai Airports": "dubaiairports.ae", "TAB Food / TAB Gida": "tabgida.com.tr", "TAV Airport": "tav.aero", "ISA": "isa.org", "Ecan/Allino": "allino.com", "Swedbank": "swedbank.com", "Spark NZ": "spark.co.nz", "IMCD": "imcdgroup.com", "Roc360": "roc360.com", "Tropos": "tropos.com", "Planixs": "planixs.com", "AllegroPay": "allegro.pl", "LexisNexis": "lexisnexis.com", "RELEX Solutions": "relexsolutions.com", "QRDI": "qrdi.org.qa", "PIF": "pif.gov.sa", "QIA": "qia.qa", "KDDI": "kddi.com", "phData (Partner)": "phdata.io", "EY (Partner)": "ey.com", "Tulapi": "tulapi.com", "Block": "block.xyz", "Zendesk": "zendesk.com", "Exxon Mobil": "exxonmobil.com", "Tredence (Partner)": "tredence.com", "LTI Mindtree (Partner)": "ltimindtree.com", "Telit": "telit.com", "Vanguard": "vanguard.com", "LSEG": "lseg.com", "Morgan Stanley": "morganstanley.com", "AMD": "amd.com", "Deloitte (Partner)": "deloitte.com", "GAIC": "gaic.com", "Biogen": "biogen.com", "Pfizer": "pfizer.com", "Novartis": "novartis.com", "Marqeta": "marqeta.com", "Grainger": "grainger.com", "BNY (Customer)": "bny.com", "Blue Yonder (Customer)": "blueyonder.com"}};
+
+const PRIORITY_COLORS = {
+  "P0 — Keynote": "#29B5E8",
+  "P0 — Customer/Prospect": "#E85A3E",
+  "P1 — Partner": "#E89B3E",
+  "P1 — Core RAI Topic": "#A8C268",
+  "P1 — Strategic": "#C089D3",
+  "P2 — Adjacent Topic + Context": "#8A8377",
+  "P2 — Vertical Lens": "#8A8377",
+  "P2 — Exec/CTO": "#8A8377",
+};
+const PRIORITY_ORDER = [
+  "P0 — Keynote",
+  "P0 — Customer/Prospect",
+  "P1 — Core RAI Topic",
+  "P1 — Strategic",
+  "P1 — Partner",
+  "P2 — Adjacent Topic + Context",
+  "P2 — Vertical Lens",
+  "P2 — Exec/CTO",
+];
+const CORE_TOPIC_SET = new Set([
+  "Knowledge Graph","Ontology / Semantic Layer","Decision Intelligence",
+  "Reasoning / Optimization","LLM Specialization / Eval",
+  "Context/Knowledge Layer","Open Semantics","Industry Future-Of",
+  "Strategic / VC Lens","Agentic Enterprise (Strategic)"
+]);
+
+// Talking Heads-flavored result lyrics that rotate based on what's showing
+const LYRICS = [
+  "Letting the days go by…",
+  "How did I get here?",
+  "Same as it ever was.",
+  "This ain't no disco — this is the agenda.",
+  "Watch out — you might get what you're after.",
+  "Hold tight, wait 'til the party's over.",
+];
+function pickLyric(count) {
+  if (count === 0) return "We're on a road to nowhere.";
+  if (count < 10) return LYRICS[count % LYRICS.length];
+  return LYRICS[(count * 7) % LYRICS.length];
+}
+
+const AVATAR_COLORS = ["#E85A3E","#E89B3E","#A8C268","#29B5E8","#C089D3","#8A8377","#F0B675","#8FA8B8"];
+
+const state = {
+  search: "",
+  priority: new Set(),
+  day: new Set(),
+  account: new Set(),
+  topic: new Set(),
+};
+
+function initials(name) {
+  return name.split(/\s+/).filter(Boolean).slice(0,2).map(w => w[0]).join("").toUpperCase();
+}
+function avatarColor(name) {
+  let h = 0;
+  for (let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) % AVATAR_COLORS.length;
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+function formatTime(dt) {
+  const parts = dt.split("|").map(s => s.trim());
+  if (parts.length === 2) return parts[0] + " · " + parts[1];
+  return dt;
+}
+function logoHtml(account, size=20) {
+  const domain = DATA.company_domains[account];
+  if (!domain) {
+    return `<span style="display:inline-flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:50%;background:${avatarColor(account)};color:#fff;font-size:9px;font-weight:700;">${initials(account)}</span>`;
+  }
+  return `<img class="company-logo" src="https://www.google.com/s2/favicons?domain=${domain}&sz=128" alt="" style="width:${size}px;height:${size}px;" onerror="this.style.display='none'">`;
+}
+
+function renderSessions(list) {
+  const container = document.getElementById("cards");
+  if (!list.length) {
+    container.innerHTML = '<div class="empty"><div class="empty-headline">"We\'re on a road to nowhere."</div><div>Try clearing some filters.</div></div>';
+    document.getElementById("result-count").textContent = "0";
+    document.getElementById("results-lyric").textContent = pickLyric(0);
+    return;
+  }
+  document.getElementById("result-count").textContent = list.length;
+  document.getElementById("results-lyric").textContent = pickLyric(list.length);
+  container.innerHTML = list.map(s => sessionCardHtml(s)).join("");
+}
+
+function sessionCardHtml(s) {
+  const color = PRIORITY_COLORS[s.Priority] || "#8A8377";
+  const priLabel = s.Priority.split("—")[1] ? s.Priority.split("—")[1].trim() : s.Priority;
+  const priClass = s.Priority.startsWith("P0") ? "P0" : (s.Priority.startsWith("P1") ? "P1" : "P2");
+  const companies = s["Customer/Prospect Tags"] ? s["Customer/Prospect Tags"].split(",").map(c => c.trim()).filter(Boolean) : [];
+  const topics = s["Topic Tags"] ? s["Topic Tags"].split(",").map(t => t.trim()).filter(Boolean) : [];
+  const speakers = s.Speakers ? s.Speakers.split(";").map(sp => sp.trim()).filter(Boolean) : [];
+  const affil = s["Affiliated Companies"] ? s["Affiliated Companies"].split(";").map(a => a.trim()).filter(Boolean) : [];
+
+  const companyHtml = companies.length
+    ? `<div class="card-companies">${companies.map(c => `<span class="company-pill">${logoHtml(c, 20)}<span>${c}</span></span>`).join("")}</div>` : "";
+  const topicHtml = topics.length
+    ? `<div class="topic-tags">${topics.map(t => `<span class="topic-tag${CORE_TOPIC_SET.has(t) ? ' core' : ''}">${t}</span>`).join("")}</div>` : "";
+  const speakerHtml = speakers.length
+    ? `<div class="speakers"><span class="speakers-label">Speakers</span>${speakers.slice(0,6).map((sp,i) => {
+        const co = affil[i] || "";
+        return `<span class="avatar"><span class="avatar-circle" style="background:${avatarColor(sp)}">${initials(sp)}</span><span>${sp}${co ? ` <span style="color:var(--ink-faint)">· ${co}</span>` : ""}</span></span>`;
+      }).join("")}${speakers.length > 6 ? `<span style="color:var(--ink-faint);font-size:12px;">+${speakers.length-6} more</span>` : ""}</div>` : "";
+
+  return `
+    <div class="card">
+      <div class="card-priority" style="background:${color}"></div>
+      <div class="card-head">
+        <div class="card-title">${s["Session Title"]}</div>
+        <span class="badge" style="background:${color}1F;color:${color};border:1px solid ${color}55">${priClass} · ${priLabel}</span>
+      </div>
+      <div class="card-meta">
+        <span class="meta-item"><span class="meta-icon">📅</span>${formatTime(s["Date & Time"])}</span>
+        <span class="meta-item"><span class="meta-icon">🏷️</span>${s.Track}</span>
+      </div>
+      ${companyHtml}
+      ${s["Why Attend"] ? `<div class="why">${s["Why Attend"]}</div>` : ""}
+      ${topicHtml}
+      ${speakerHtml}
+    </div>
+  `;
+}
+
+function applyFilters() {
+  const q = state.search.toLowerCase();
+  const filtered = DATA.sessions.filter(s => {
+    if (state.priority.size && !state.priority.has(s.Priority)) return false;
+    if (state.day.size && !state.day.has(s.Day)) return false;
+    if (state.account.size) {
+      const tags = (s["Customer/Prospect Tags"] || "").split(",").map(x=>x.trim());
+      if (!tags.some(t => state.account.has(t))) return false;
+    }
+    if (state.topic.size) {
+      const tags = (s["Topic Tags"] || "").split(",").map(x=>x.trim());
+      if (!tags.some(t => state.topic.has(t))) return false;
+    }
+    if (q) {
+      const hay = (s["Session Title"] + " " + (s.Speakers||"") + " " + (s["Affiliated Companies"]||"") + " " + (s["Customer/Prospect Tags"]||"") + " " + (s["Topic Tags"]||"")).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  filtered.sort((a,b) => {
+    const pa = PRIORITY_ORDER.indexOf(a.Priority);
+    const pb = PRIORITY_ORDER.indexOf(b.Priority);
+    if (pa !== pb) return pa - pb;
+    return (a["Date & Time"]||"").localeCompare(b["Date & Time"]||"");
+  });
+  renderSessions(filtered);
+  syncStatActiveStates();
+}
+
+function syncStatActiveStates() {
+  document.querySelectorAll(".stat[data-priority-filter]").forEach(el => {
+    const matchers = el.dataset.priorityFilter.split("|");
+    const active = matchers.some(m => state.priority.has(m));
+    el.classList.toggle("active", active);
+  });
+  document.querySelectorAll(".chip[data-filter='priority']").forEach(chip => {
+    chip.classList.toggle("active", state.priority.has(chip.dataset.value));
+  });
+}
+
+function renderFilterChips() {
+  const pCounts = {};
+  DATA.sessions.forEach(s => pCounts[s.Priority] = (pCounts[s.Priority]||0) + 1);
+  document.getElementById("filter-priority").innerHTML = PRIORITY_ORDER
+    .filter(p => pCounts[p])
+    .map(p => {
+      const c = PRIORITY_COLORS[p];
+      const label = p.split("—")[0].trim() + " · " + (p.split("—")[1]||"").trim();
+      return `<div class="chip" data-filter="priority" data-value="${p}">
+        <span class="stat-dot" style="background:${c}"></span>${label}<span class="chip-count">${pCounts[p]}</span>
+      </div>`;
+    }).join("");
+
+  const dCounts = {};
+  DATA.sessions.forEach(s => { if (s.Day) dCounts[s.Day] = (dCounts[s.Day]||0) + 1; });
+  const dayOrder = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+  document.getElementById("filter-day").innerHTML = dayOrder
+    .filter(d => dCounts[d])
+    .map(d => `<div class="chip" data-filter="day" data-value="${d}">${d}<span class="chip-count">${dCounts[d]}</span></div>`)
+    .join("");
+
+  const aCounts = {};
+  DATA.sessions.forEach(s => {
+    (s["Customer/Prospect Tags"]||"").split(",").map(x=>x.trim()).filter(Boolean).forEach(a => aCounts[a] = (aCounts[a]||0)+1);
+  });
+  document.getElementById("filter-account").innerHTML = Object.entries(aCounts)
+    .sort((a,b) => b[1]-a[1])
+    .map(([a,c]) => `<div class="chip" data-filter="account" data-value="${a}">${a}<span class="chip-count">${c}</span></div>`)
+    .join("");
+
+  const tCounts = {};
+  DATA.sessions.forEach(s => {
+    (s["Topic Tags"]||"").split(",").map(x=>x.trim()).filter(Boolean).forEach(t => tCounts[t] = (tCounts[t]||0)+1);
+  });
+  document.getElementById("filter-topic").innerHTML = Object.entries(tCounts)
+    .filter(([t,c]) => c >= 2)
+    .sort((a,b) => b[1]-a[1])
+    .map(([t,c]) => `<div class="chip" data-filter="topic" data-value="${t}">${t}<span class="chip-count">${c}</span></div>`)
+    .join("");
+
+  document.querySelectorAll(".chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      const filter = chip.dataset.filter;
+      const value = chip.dataset.value;
+      const set = state[filter];
+      if (set.has(value)) { set.delete(value); chip.classList.remove("active"); }
+      else { set.add(value); chip.classList.add("active"); }
+      applyFilters();
+    });
+  });
+}
+
+function renderStats() {
+  const total = DATA.sessions.length;
+  const p0 = DATA.sessions.filter(s => s.Priority.startsWith("P0")).length;
+  const p1 = DATA.sessions.filter(s => s.Priority.startsWith("P1")).length;
+  const customers = new Set();
+  DATA.sessions.forEach(s => (s["Customer/Prospect Tags"]||"").split(",").map(x=>x.trim()).filter(Boolean).forEach(a => customers.add(a)));
+
+  const p0Filter = "P0 — Keynote|P0 — Customer/Prospect";
+  const p1Filter = "P1 — Core RAI Topic|P1 — Strategic|P1 — Partner";
+
+  document.getElementById("hero-stats").innerHTML = `
+    <button class="stat" data-stat="total"><span class="stat-num">${total}</span><span class="stat-label">curated<br>sessions</span></button>
+    <button class="stat" data-stat="p0" data-priority-filter="${p0Filter}">
+      <span class="stat-dot" style="background:var(--rai-orange)"></span>
+      <span class="stat-num">${p0}</span><span class="stat-label">P0 —<br>Must-Attend</span>
+      <span class="stat-arrow">→</span>
+    </button>
+    <button class="stat" data-stat="p1" data-priority-filter="${p1Filter}">
+      <span class="stat-dot" style="background:#A8C268"></span>
+      <span class="stat-num">${p1}</span><span class="stat-label">P1 —<br>High Value</span>
+      <span class="stat-arrow">→</span>
+    </button>
+    <button class="stat" data-stat="customers"><span class="stat-num">${customers.size}</span><span class="stat-label">RAI accounts<br>on stage</span><span class="stat-arrow">→</span></button>
+  `;
+
+  // Wire up clicks
+  document.querySelectorAll(".stat").forEach(el => {
+    el.addEventListener("click", () => {
+      const which = el.dataset.stat;
+      // Switch to sessions tab first
+      switchTab("sessions");
+      if (which === "total") {
+        resetFilters();
+      } else if (which === "p0") {
+        state.priority = new Set(["P0 — Keynote","P0 — Customer/Prospect"]);
+        applyFilters();
+      } else if (which === "p1") {
+        state.priority = new Set(["P1 — Core RAI Topic","P1 — Strategic","P1 — Partner"]);
+        applyFilters();
+      } else if (which === "customers") {
+        // jump to coverage tab instead — that's where you see the accounts
+        switchTab("coverage");
+        return;
+      }
+      // Scroll session list into view
+      document.getElementById("view-sessions").scrollIntoView({behavior:"smooth", block:"start"});
+    });
+  });
+
+  document.getElementById("count-sessions").textContent = total;
+  document.getElementById("count-coverage").textContent = DATA.coverage.length;
+}
+
+function renderCoverage() {
+  const onStage = DATA.coverage.filter(c => c.session_indexes.length);
+  const plan = DATA.coverage.filter(c => !c.session_indexes.length);
+  document.getElementById("coverage-on-stage").innerHTML = onStage.map(c => acctCardHtml(c, true)).join("");
+  document.getElementById("coverage-plan").innerHTML = plan.map(c => acctCardHtml(c, false)).join("");
+
+  document.querySelectorAll(".acct-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const idxStr = card.dataset.idxs;
+      if (!idxStr) return;
+      const idxs = idxStr.split(",").map(Number).filter(n => !isNaN(n));
+      if (!idxs.length) return;
+      showAcctModal(card.dataset.name, idxs);
+    });
+  });
+}
+
+function acctCardHtml(c, onStage) {
+  const cleanName = c.name.replace(/\s*\(.+\)/,'');
+  const logoEl = c.domain
+    ? `<img src="https://www.google.com/s2/favicons?domain=${c.domain}&sz=128" alt="" style="width:32px;height:32px;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  return `
+    <div class="acct-card ${onStage ? 'on-stage' : 'plan'}" data-name="${c.name}" data-idxs="${c.session_indexes.join(',')}">
+      <div class="acct-logo">
+        ${logoEl}
+        <div class="acct-fallback" style="display:${c.domain ? 'none' : 'flex'};width:36px;height:36px;background:${avatarColor(c.name)};color:#fff;align-items:center;justify-content:center;border-radius:8px;font-weight:700;font-size:13px;">${initials(cleanName)}</div>
+      </div>
+      <div class="acct-info">
+        <div class="acct-name">${cleanName}</div>
+        <div class="acct-status ${onStage ? 'on-stage-text' : 'plan-text'}">${c.type}${onStage ? '' : ' · No session'}</div>
+      </div>
+      ${onStage ? `<div class="acct-count">${c.session_indexes.length}</div>` : ''}
+    </div>
+  `;
+}
+
+function showAcctModal(name, idxs) {
+  const sessions = idxs.map(i => DATA.sessions[i]);
+  document.getElementById("modal-title").textContent = `${name} — ${sessions.length} session${sessions.length > 1 ? 's' : ''}`;
+  document.getElementById("modal-body").innerHTML = sessions.map(s => sessionCardHtml(s)).join("");
+  document.getElementById("modal").classList.add("active");
+}
+function closeModal() {
+  document.getElementById("modal").classList.remove("active");
+}
+
+function resetFilters() {
+  state.search = "";
+  state.priority.clear();
+  state.day.clear();
+  state.account.clear();
+  state.topic.clear();
+  document.getElementById("search").value = "";
+  document.querySelectorAll(".chip.active").forEach(c => c.classList.remove("active"));
+  applyFilters();
+}
+
+function switchTab(name) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
+}
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => switchTab(tab.dataset.tab));
+});
+
+document.getElementById("search").addEventListener("input", e => {
+  state.search = e.target.value;
+  applyFilters();
+});
+
+renderStats();
+renderFilterChips();
+renderCoverage();
+applyFilters();
+</script>
+</body>
+</html>
